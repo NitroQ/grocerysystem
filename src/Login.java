@@ -55,6 +55,7 @@ public class Login {
         Dimension frameSize = new Dimension (1020, 700);
         
         frame = new JFrame("GoShopper Login");
+        frame.setResizable(false);
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,frameSize.width, frameSize.height);
                             
@@ -93,10 +94,10 @@ public class Login {
         GOshopper.setBounds(35, 97, 122, 97);
         frame.getContentPane().add(GOshopper);
         
-        JLabel lblNewLabel = new JLabel("HOPPER");
-        lblNewLabel.setFont(new Font("Spartan", Font.BOLD, 60));
-        lblNewLabel.setBounds(259, 88, 289, 114);
-        frame.getContentPane().add(lblNewLabel);
+        JLabel gosHOPPER = new JLabel("HOPPER");
+        gosHOPPER.setFont(new Font("Spartan", Font.BOLD, 60));
+        gosHOPPER.setBounds(259, 88, 289, 114);
+        frame.getContentPane().add(gosHOPPER);
         
         JLabel loginText = new JLabel("LOGIN");
         loginText.setFont(new Font("Spartan", Font.PLAIN, 30));
