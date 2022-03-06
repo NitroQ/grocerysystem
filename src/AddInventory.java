@@ -1,10 +1,13 @@
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -12,10 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class AddInventory {
+public class AddInventory extends SQLConnect {
 
-	private JFrame frame;
+	JFrame frame;
 	private JTextField prodname;
 	private JTextField prodsku;
 	private JTextField prodqty;
@@ -121,6 +126,28 @@ public class AddInventory {
 		frame.getContentPane().add(lblNewLabel_1_1_1_1_1);
 		
 		JButton add_btn = new JButton("Save");
+		add_btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try{
+					String query = "INSERT INTO Inventory (sku, prod_name, qty, price, cost) VALUES (?,?,?,?,?)";
+				    con = DriverManager.getConnection(connectionUrl);
+				    ps = con.prepareStatement(query);
+		             ps.setString(1, prodsku.getText());
+		             ps.setString(2, prodname.getText());
+		             ps.setString(3, prodqty.getText());
+		             ps.setString(4, prodprice.getText());
+		             ps.setString(5, prodcost.getText());
+		             ps.executeUpdate();
+		             JOptionPane.showMessageDialog(null, "Added");
+		             frame.dispose();
+		                
+		    	 }catch(HeadlessException | SQLException ex){
+		    		 JOptionPane.showMessageDialog(null, ex );
+		         }
+				
+			}
+		});
 		add_btn.setBounds(29, 456, 109, 43);
 		frame.getContentPane().add(add_btn);
 		

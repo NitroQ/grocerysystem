@@ -1,16 +1,22 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SQLConnect {
+	static String connectionUrl = "jdbc:sqlserver://localhost:1433; "
+			+ "databaseName= grocerysystem;"
+			+ "username= frankie;"
+			+ "password= frankie123;"
+			+ "encrypt=true;trustServerCertificate=true;";
+	static Connection con = null;
+	static PreparedStatement ps = null;
+	static ResultSet rs = null;
+	static  Statement st = null;
+	
 	public static void main(String[] args) {
-		String connectionUrl = "jdbc:sqlserver://localhost:1433; "
-				+ "databaseName= INF202Gesmundo;"
-				+ "username= frankie;"
-				+ "password= frankie123;"
-				+ "encrypt=true;trustServerCertificate=true;";
-
-		
 		try (Connection connection= DriverManager.getConnection(connectionUrl);){
 			System.out.println("Connected Successfully");
 		}catch(SQLException e) {
