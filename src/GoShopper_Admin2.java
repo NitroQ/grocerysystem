@@ -73,14 +73,14 @@ public class GoShopper_Admin2 {
 			}
 		});
 		LogOut.setForeground(Color.WHITE);
-		LogOut.setFont(new Font("Roboto", Font.BOLD, 14));
-		LogOut.setBackground(new Color(47, 79, 79));
+		LogOut.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		LogOut.setBackground(new Color(0, 139, 139));
 		LogOut.setBounds(865, 34, 120, 35);
 		frame.getContentPane().add(LogOut);
 		
 		JLabel lblNewLabel_1 = new JLabel("HRIS Records");
 		lblNewLabel_1.setForeground(Color.BLACK);
-		lblNewLabel_1.setFont(new Font("Roboto", Font.BOLD, 39));
+		lblNewLabel_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 39));
 		lblNewLabel_1.setBounds(35, 79, 331, 52);
 		frame.getContentPane().add(lblNewLabel_1);
 		
@@ -105,26 +105,26 @@ public class GoShopper_Admin2 {
 		lblNewLabel_1_1.setBounds(23, 27, 331, 38);
 		panel.add(lblNewLabel_1_1);
 		lblNewLabel_1_1.setForeground(Color.BLACK);
-		lblNewLabel_1_1.setFont(new Font("Roboto", Font.BOLD, 30));
+		lblNewLabel_1_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 30));
 		
 		JButton btnAdd = new JButton("Add");
 		btnAdd.setForeground(Color.WHITE);
-		btnAdd.setFont(new Font("Roboto", Font.BOLD, 14));
-		btnAdd.setBackground(new Color(204, 102, 102));
+		btnAdd.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		btnAdd.setBackground(new Color(220, 20, 60));
 		btnAdd.setBounds(635, 30, 78, 35);
 		panel.add(btnAdd);
 		
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.setForeground(Color.WHITE);
-		btnEdit.setFont(new Font("Roboto", Font.BOLD, 14));
-		btnEdit.setBackground(new Color(204, 102, 102));
+		btnEdit.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		btnEdit.setBackground(new Color(220, 20, 60));
 		btnEdit.setBounds(725, 30, 80, 35);
 		panel.add(btnEdit);
 		
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.setForeground(Color.WHITE);
-		btnDelete.setFont(new Font("Roboto", Font.BOLD, 14));
-		btnDelete.setBackground(new Color(204, 102, 102));
+		btnDelete.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		btnDelete.setBackground(new Color(220, 20, 60));
 		btnDelete.setBounds(814, 30, 102, 35);
 		panel.add(btnDelete);
 		

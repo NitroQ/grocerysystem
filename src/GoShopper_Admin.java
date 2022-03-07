@@ -79,14 +79,14 @@ public class GoShopper_Admin {
 			}
 		});
 		LogOut.setForeground(Color.WHITE);
-		LogOut.setFont(new Font("Roboto", Font.BOLD, 14));
-		LogOut.setBackground(new Color(47, 79, 79));
+		LogOut.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		LogOut.setBackground(new Color(0, 139, 139));
 		LogOut.setBounds(865, 34, 120, 35);
 		frame.getContentPane().add(LogOut);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("HRIS Records");
 		lblNewLabel_1_1.setForeground(Color.BLACK);
-		lblNewLabel_1_1.setFont(new Font("Roboto", Font.BOLD, 39));
+		lblNewLabel_1_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 39));
 		lblNewLabel_1_1.setBounds(37, 533, 253, 52);
 		frame.getContentPane().add(lblNewLabel_1_1);
 		btnNewButton.setBounds(37, 595, 160, 35);
@@ -94,13 +94,13 @@ public class GoShopper_Admin {
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Sales Records");
 		lblNewLabel_1_2.setForeground(Color.BLACK);
-		lblNewLabel_1_2.setFont(new Font("Roboto", Font.BOLD, 39));
+		lblNewLabel_1_2.setFont(new Font("Segoe UI Variable", Font.BOLD, 39));
 		lblNewLabel_1_2.setBounds(531, 83, 253, 52);
 		frame.getContentPane().add(lblNewLabel_1_2);
 		
 	    table_Sales = new JTable(model);
 	    table_Sales.setShowGrid(false);
-	    table_Sales.setFont(new Font("Roboto", Font.PLAIN, 17));
+	    table_Sales.setFont(new Font("Segoe UI Variable", Font.PLAIN, 17));
 	    table_Sales.setRowHeight(30);
 	    table_Sales.setBounds(531, 145, 454, 487);
 	    JScrollPane scrollPane_SalesRecords = new JScrollPane(table_Sales);
@@ -109,7 +109,7 @@ public class GoShopper_Admin {
 		
 		JLabel lblNewLabel_1 = new JLabel("Admin Dashboard");
 		lblNewLabel_1.setForeground(Color.BLACK);
-		lblNewLabel_1.setFont(new Font("Roboto", Font.BOLD, 39));
+		lblNewLabel_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 39));
 		lblNewLabel_1.setBounds(37, 83, 331, 52);
 		frame.getContentPane().add(lblNewLabel_1);
 		
@@ -122,14 +122,14 @@ public class GoShopper_Admin {
 		JLabel lblSales_2_1 = new JLabel("Transactions");
 		lblSales_2_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSales_2_1.setForeground(Color.WHITE);
-		lblSales_2_1.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblSales_2_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales_2_1.setBounds(39, 119, 152, 39);
 		Profit_1.add(lblSales_2_1);
 		
 		JLabel lblSales_2_1_1 = new JLabel("Total");
 		lblSales_2_1_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSales_2_1_1.setForeground(Color.WHITE);
-		lblSales_2_1_1.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblSales_2_1_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales_2_1_1.setBounds(39, 92, 152, 39);
 		Profit_1.add(lblSales_2_1_1);
 		
@@ -142,7 +142,7 @@ public class GoShopper_Admin {
 		JLabel lblSales_2 = new JLabel("Profit");
 		lblSales_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSales_2.setForeground(Color.WHITE);
-		lblSales_2.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblSales_2.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales_2.setBounds(39, 119, 152, 39);
 		Profit.add(lblSales_2);
 		
@@ -155,14 +155,14 @@ public class GoShopper_Admin {
 		JLabel lblNewLabel_2 = new JLabel("Cost of");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_2.setForeground(Color.WHITE);
-		lblNewLabel_2.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblNewLabel_2.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblNewLabel_2.setBounds(39, 92, 152, 39);
 		CostGoods.add(lblNewLabel_2);
 		
 		JLabel lblSales_1 = new JLabel("Goods");
 		lblSales_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSales_1.setForeground(Color.WHITE);
-		lblSales_1.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblSales_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales_1.setBounds(39, 119, 152, 39);
 		CostGoods.add(lblSales_1);
 		
@@ -175,14 +175,14 @@ public class GoShopper_Admin {
 		JLabel lblNewLabel = new JLabel("Total Net");
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblNewLabel.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblNewLabel.setBounds(39, 92, 152, 39);
 		NetSales.add(lblNewLabel);
 		
 		JLabel lblSales = new JLabel("Sales");
 		lblSales.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSales.setForeground(Color.WHITE);
-		lblSales.setFont(new Font("Roboto", Font.BOLD, 22));
+		lblSales.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales.setBounds(39, 119, 152, 39);
 		NetSales.add(lblSales);
 		

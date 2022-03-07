@@ -72,39 +72,39 @@ public class GoShopper_AdminAdd {
 		
 		JLabel lblNewLabel_1 = new JLabel("Add Employee");
 		lblNewLabel_1.setForeground(Color.BLACK);
-		lblNewLabel_1.setFont(new Font("Roboto", Font.BOLD, 20));
+		lblNewLabel_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
 		lblNewLabel_1.setBounds(28, 85, 325, 35);
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("Employee Name");
 		lblNewLabel_1_1.setForeground(Color.BLACK);
-		lblNewLabel_1_1.setFont(new Font("Roboto", Font.ITALIC, 16));
+		lblNewLabel_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
 		lblNewLabel_1_1.setBounds(28, 119, 325, 29);
 		frame.getContentPane().add(lblNewLabel_1_1);
 		
 		field_EmpName = new JTextField();
 		field_EmpName.setFont(new Font("Roboto", Font.PLAIN, 12));
-		field_EmpName.setBackground(new Color(220, 220, 220));
+		field_EmpName.setBackground(new Color(245, 245, 245));
 		field_EmpName.setBounds(28, 150, 294, 29);
 		frame.getContentPane().add(field_EmpName);
 		field_EmpName.setColumns(10);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Employee Number");
 		lblNewLabel_1_1_1.setForeground(Color.BLACK);
-		lblNewLabel_1_1_1.setFont(new Font("Roboto", Font.ITALIC, 16));
+		lblNewLabel_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
 		lblNewLabel_1_1_1.setBounds(28, 185, 325, 29);
 		frame.getContentPane().add(lblNewLabel_1_1_1);
 		
 		field_EmpNumber = new JTextField();
 		field_EmpNumber.setFont(new Font("Roboto", Font.PLAIN, 12));
 		field_EmpNumber.setColumns(10);
-		field_EmpNumber.setBackground(new Color(220, 220, 220));
+		field_EmpNumber.setBackground(new Color(245, 245, 245));
 		field_EmpNumber.setBounds(28, 218, 294, 29);
 		frame.getContentPane().add(field_EmpNumber);
 		
 		JLabel lblNewLabel_1_1_1_1 = new JLabel("Role");
 		lblNewLabel_1_1_1_1.setForeground(Color.BLACK);
-		lblNewLabel_1_1_1_1.setFont(new Font("Roboto", Font.ITALIC, 16));
+		lblNewLabel_1_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
 		lblNewLabel_1_1_1_1.setBounds(28, 252, 325, 29);
 		frame.getContentPane().add(lblNewLabel_1_1_1_1);
 		
