@@ -8,8 +8,8 @@ import java.sql.Statement;
 public class SQLConnect {
 	static String connectionUrl = "jdbc:sqlserver://localhost:1433; "
 			+ "databaseName= grocerysystem;"
-			+ "username= frankie;"
-			+ "password= frankie123;"
+			+ "username= thejldeleon;"
+			+ "password= louie123;"
 			+ "encrypt=true;trustServerCertificate=true;";
 	static Connection con = null;
 	static PreparedStatement ps = null;
