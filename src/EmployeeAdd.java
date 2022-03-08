@@ -94,16 +94,16 @@ public class EmployeeAdd {
 		lblUsername.setBounds(28, 305, 293, 21);
 		frame.getContentPane().add(lblUsername);
 		
-		JLabel lblEmployee = new JLabel("Add Employee");
-		lblEmployee.setForeground(Color.BLACK);
-		lblEmployee.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
-		lblEmployee.setBounds(28, 85, 325, 35);
-		frame.getContentPane().add(lblEmployee);
+		JLabel lblAddEmployee = new JLabel("Add Employee");
+		lblAddEmployee.setForeground(Color.BLACK);
+		lblAddEmployee.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
+		lblAddEmployee.setBounds(28, 85, 325, 35);
+		frame.getContentPane().add(lblAddEmployee);
 		
 		JLabel lblFName = new JLabel("First Name");
 		lblFName.setForeground(Color.BLACK);
 		lblFName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-		lblFName.setBounds(28, 149, 325, 21);
+		lblFName.setBounds(28, 149, 294, 21);
 		frame.getContentPane().add(lblFName);
 		
 		txtFName = new JTextField();
@@ -195,10 +195,10 @@ public class EmployeeAdd {
 		lblUser.setBounds(28, 538, 293, 21);
 		frame.getContentPane().add(lblUser);
 		
-		JCheckBox chckAdmin = new JCheckBox("Admin");
-		chckAdmin.setFont(new Font("Dialog", Font.PLAIN, 12));
-		chckAdmin.setBounds(28, 569, 97, 31);
-		frame.getContentPane().add(chckAdmin);
+		JCheckBox chckUser = new JCheckBox("Admin");
+		chckUser.setFont(new Font("Dialog", Font.PLAIN, 12));
+		chckUser.setBounds(28, 569, 97, 31);
+		frame.getContentPane().add(chckUser);
 		
 		txtAge = new JTextField();
 		txtAge.setBackground(new Color(245, 245, 245));
@@ -217,6 +217,7 @@ public class EmployeeAdd {
 		frame.getContentPane().add(lblAddress);
 		
 		txtAddress = new JTextField();
+		txtAddress.setBackground(new Color(245, 245, 245));
 		txtAddress.setBounds(28, 253, 626, 31);
 		frame.getContentPane().add(txtAddress);
 		txtAddress.setColumns(10);
