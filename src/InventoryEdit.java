@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
-public class EditInventory extends SQLConnect{
+public class InventoryEdit extends SQLConnect{
 
 	JFrame frame;
 	private JTextField prodname;
@@ -29,7 +29,7 @@ public class EditInventory extends SQLConnect{
 	private JTextField prodcost;
 	private String prod_id, sku, prod_name, qty, price, cost;
 
-	public EditInventory(String prod_id) {
+	public InventoryEdit(String prod_id) {
 		this.prod_id = prod_id;
 		initialize();
 	}
@@ -171,8 +171,9 @@ public class EditInventory extends SQLConnect{
 		
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setFont(new Font("Segoe UI Variable", Font.PLAIN, 16));
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\deleo\\eclipse-workspace\\GrocerySystem\\grocerysystem\\Files\\Inventory_LogoSub.png"));
-		lblNewLabel.setBounds(-15, -54, 474, 585);
+		Image img2 = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
+		lblNewLabel.setIcon(new ImageIcon(img2));
+		lblNewLabel.setBounds(24, 25, 211, 50);
 		frame.getContentPane().add(lblNewLabel);
 		
 	}

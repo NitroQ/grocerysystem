@@ -19,7 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
 
-public class AddInventory extends SQLConnect {
+public class InventoryAdd extends SQLConnect {
 
 	JFrame frame;
 	private JTextField prodname;
@@ -35,7 +35,7 @@ public class AddInventory extends SQLConnect {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddInventory window = new AddInventory();
+					InventoryAdd window = new InventoryAdd();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -47,7 +47,7 @@ public class AddInventory extends SQLConnect {
 	/**
 	 * Create the application.
 	 */
-	public AddInventory() {
+	public InventoryAdd() {
 		initialize();
 	}
 
@@ -63,12 +63,12 @@ public class AddInventory extends SQLConnect {
 		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 568);
 		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
 		frame.setIconImage(icon);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setBounds(24, 25, 211, 50);
 		Image img = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
-		frame.getContentPane().setLayout(null);
 		lblNewLabel.setIcon(new ImageIcon(img));
 		frame.getContentPane().add(lblNewLabel);
 		

@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 public class Inventory extends SQLConnect{
 
 	JFrame frame;
+	private String emp_id;
 	private JTable table, tablehistory, tablelow;
 	
 	
@@ -63,23 +64,12 @@ public class Inventory extends SQLConnect{
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Inventory window = new Inventory();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
 	 */
-	public Inventory() {
+	public Inventory(String emp_id) {
+		this.emp_id = emp_id;
 		initialize();
 	}
 
@@ -188,7 +178,7 @@ public class Inventory extends SQLConnect{
 		btnAdd.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddInventory inv_add = new AddInventory();
+				InventoryAdd inv_add = new InventoryAdd();
 				inv_add.frame.setVisible(true);
 			}
 		});
@@ -202,7 +192,7 @@ public class Inventory extends SQLConnect{
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
-				EditInventory edit_inv = new EditInventory(String.valueOf(table.getModel().getValueAt(row, 0)));
+				InventoryEdit edit_inv = new InventoryEdit(String.valueOf(table.getModel().getValueAt(row, 0)));
 				edit_inv.frame.setVisible(true);
 			}
 		});
@@ -263,19 +253,19 @@ public class Inventory extends SQLConnect{
 		Window_Name_3.setBounds(719, 420, 168, 43);
 		frame.getContentPane().add(Window_Name_3);
 		
-		JLabel GoShopperAdmin_Logo = new JLabel("New label");
-		GoShopperAdmin_Logo.setIcon(new ImageIcon("C:\\Users\\deleo\\eclipse-workspace\\GrocerySystem\\grocerysystem\\Files\\LogoAdmin.png"));
+		JLabel GoShopperAdmin_Logo = new JLabel();
+		Image adminlogo = new ImageIcon(this.getClass().getResource("/LogoAdmin.png")).getImage();
+		GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));
 		GoShopperAdmin_Logo.setBounds(0, 0, 1006, 685);
 		frame.getContentPane().add(GoShopperAdmin_Logo);
 		
-		JLabel GoShopper_BG = new JLabel("New label");
-		GoShopper_BG.setIcon(new ImageIcon("C:\\Users\\deleo\\eclipse-workspace\\GrocerySystem\\grocerysystem\\Files\\BGAdmin.png"));
+		JLabel GoShopper_BG = new JLabel();
+		Image bg = new ImageIcon(this.getClass().getResource("/BGAdmin.png")).getImage();
+		GoShopper_BG.setIcon(new ImageIcon(bg));
 		GoShopper_BG.setBounds(0, 0, 1006, 685);
 		frame.getContentPane().add(GoShopper_BG);
+		
 
 
-		
-		
-		
 	}
 }
