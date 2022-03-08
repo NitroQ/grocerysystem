@@ -45,7 +45,6 @@ public class EmployeeAdd {
      private JTextField txtLName;
      private JTextField txtUsername;
      private JTextField txtEmail;
-     private JTextField txtEmpID;
      private JPasswordField fieldPassword;
      private JTextField txtAge;
      private JTextField txtAddress;
@@ -86,13 +85,13 @@ public class EmployeeAdd {
 		
 		txtUsername = new JTextField();
 		txtUsername.setBackground(new Color(245, 245, 245));
-		txtUsername.setBounds(363, 336, 294, 31);
+		txtUsername.setBounds(28, 337, 294, 31);
 		frame.getContentPane().add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblUsername.setBounds(363, 304, 293, 21);
+		lblUsername.setBounds(28, 305, 293, 21);
 		frame.getContentPane().add(lblUsername);
 		
 		JLabel lblEmployee = new JLabel("Add Employee");
@@ -130,14 +129,14 @@ public class EmployeeAdd {
 		JLabel lblRole = new JLabel("Role");
 		lblRole.setForeground(Color.BLACK);
 		lblRole.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-		lblRole.setBounds(28, 453, 293, 21);
+		lblRole.setBounds(363, 379, 293, 21);
 		frame.getContentPane().add(lblRole);
 		
 		JComboBox cmdPosition = new JComboBox();
 		cmdPosition.setFont(new Font("Dialog", Font.PLAIN, 12));
 		cmdPosition.setModel(new DefaultComboBoxModel(new String[] {"Merch", "Cashier", "Manager"}));
 		cmdPosition.setBackground(new Color(245, 245, 245));
-		cmdPosition.setBounds(28, 485, 294, 31);
+		cmdPosition.setBounds(363, 411, 294, 31);
 		frame.getContentPane().add(cmdPosition);
 		
 		JButton btnEdit = new JButton("Save");
@@ -161,67 +160,55 @@ public class EmployeeAdd {
 		
 		JLabel lblEmail = new JLabel("Email");
 		lblEmail.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblEmail.setBounds(28, 379, 294, 21);
+		lblEmail.setBounds(363, 305, 294, 21);
 		frame.getContentPane().add(lblEmail);
 		
 		txtEmail = new JTextField();
 		txtEmail.setBackground(new Color(245, 245, 245));
-		txtEmail.setBounds(28, 411, 293, 31);
+		txtEmail.setBounds(363, 337, 293, 31);
 		frame.getContentPane().add(txtEmail);
 		txtEmail.setColumns(10);
 		
 		JLabel lblGender = new JLabel("Gender");
 		lblGender.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblGender.setBounds(363, 453, 294, 21);
+		lblGender.setBounds(28, 453, 294, 21);
 		frame.getContentPane().add(lblGender);
 		
 		JComboBox cmbGender = new JComboBox();
 		cmbGender.setFont(new Font("Dialog", Font.PLAIN, 12));
 		cmbGender.setModel(new DefaultComboBoxModel(new String[] {"Female", "Male"}));
-		cmbGender.setBounds(363, 485, 294, 31);
+		cmbGender.setBounds(28, 485, 294, 31);
 		frame.getContentPane().add(cmbGender);
-		
-		
-		JLabel lblEmpID = new JLabel("Employee ID");
-		lblEmpID.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblEmpID.setBounds(28, 304, 293, 21);
-		frame.getContentPane().add(lblEmpID);
-		
-		txtEmpID = new JTextField();
-		txtEmpID.setBackground(new Color(245, 245, 245));
-		txtEmpID.setBounds(28, 336, 293, 31);
-		frame.getContentPane().add(txtEmpID);
-		txtEmpID.setColumns(10);
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblPassword.setBounds(363, 378, 294, 21);
+		lblPassword.setBounds(28, 379, 294, 21);
 		frame.getContentPane().add(lblPassword);
 		
 		fieldPassword = new JPasswordField();
 		fieldPassword.setBackground(new Color(245, 245, 245));
-		fieldPassword.setBounds(363, 412, 294, 29);
+		fieldPassword.setBounds(28, 413, 294, 29);
 		frame.getContentPane().add(fieldPassword);
 		
 		JLabel lblUser = new JLabel("User Type");
 		lblUser.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblUser.setBounds(364, 527, 293, 21);
+		lblUser.setBounds(28, 538, 293, 21);
 		frame.getContentPane().add(lblUser);
 		
 		JCheckBox chckAdmin = new JCheckBox("Admin");
 		chckAdmin.setFont(new Font("Dialog", Font.PLAIN, 12));
-		chckAdmin.setBounds(364, 558, 97, 31);
+		chckAdmin.setBounds(28, 569, 97, 31);
 		frame.getContentPane().add(chckAdmin);
 		
 		txtAge = new JTextField();
 		txtAge.setBackground(new Color(245, 245, 245));
-		txtAge.setBounds(29, 559, 294, 31);
+		txtAge.setBounds(363, 485, 294, 31);
 		frame.getContentPane().add(txtAge);
 		txtAge.setColumns(10);
 		
 		JLabel lblAge = new JLabel("Age");
 		lblAge.setFont(new Font("Dialog", Font.ITALIC, 16));
-		lblAge.setBounds(29, 527, 294, 21);
+		lblAge.setBounds(363, 453, 294, 21);
 		frame.getContentPane().add(lblAge);
 		
 		JLabel lblAddress = new JLabel("Address");
@@ -236,7 +223,7 @@ public class EmployeeAdd {
 		
 		JLabel GoShopperAdmin_Logo = new JLabel("New label");
 		GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));
-		GoShopperAdmin_Logo.setBounds(0, 0, 333, 393);
+		GoShopperAdmin_Logo.setBounds(-17, 0, 333, 393);
 		frame.getContentPane().add(GoShopperAdmin_Logo);
 	}
 }
