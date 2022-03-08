@@ -7,7 +7,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Projects/Eclipse/mssql-jdbc-10.2.0.jre17.jar">
+	<classpathentry kind="lib" path="D:/cass/Documents/Eclipse/grocerysystem/mssql-jdbc-10.2.0.jre17.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
