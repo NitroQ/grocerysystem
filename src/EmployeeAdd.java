@@ -94,11 +94,11 @@ public class EmployeeAdd {
 		lblUsername.setBounds(28, 305, 293, 21);
 		frame.getContentPane().add(lblUsername);
 		
-		JLabel lblAddEmployee = new JLabel("Add Employee");
-		lblAddEmployee.setForeground(Color.BLACK);
-		lblAddEmployee.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
-		lblAddEmployee.setBounds(28, 85, 325, 35);
-		frame.getContentPane().add(lblAddEmployee);
+		JLabel AddEmployeeText = new JLabel("Add Employee");
+		AddEmployeeText.setForeground(Color.BLACK);
+		AddEmployeeText.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
+		AddEmployeeText.setBounds(28, 85, 325, 35);
+		frame.getContentPane().add(AddEmployeeText);
 		
 		JLabel lblFName = new JLabel("First Name");
 		lblFName.setForeground(Color.BLACK);
