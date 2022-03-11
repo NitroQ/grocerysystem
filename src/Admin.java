@@ -19,7 +19,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class Admin {
 
-	private JFrame frame;
+	 JFrame frame;
+	private String emp_id;
 	private JTable table_Sales;
 	private JScrollPane scrollPane;
     private  String[] columns = {"Purchase ID", "Purchase Sales", "Date"};
@@ -32,26 +33,12 @@ public class Admin {
            }
      };
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Admin window = new Admin();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
 	 */
-	public Admin() {
+	public Admin(String emp_id) {
+		this.emp_id = emp_id;
 		initialize();
 	}
 
@@ -71,12 +58,19 @@ public class Admin {
 		btnNewButton.setFont(new Font("Roboto", Font.BOLD, 14));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Employee emp = new Employee(emp_id);
+				emp.frame.setVisible(true);
+				
 			}
+			
 		});
 		
 		JButton LogOut = new JButton("Log-Out");
 		LogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Login log_in = new Login();
+				log_in.frame.setVisible(true);
+				frame.dispose();
 			}
 		});
 		LogOut.setForeground(Color.WHITE);
@@ -84,6 +78,35 @@ public class Admin {
 		LogOut.setBackground(new Color(0, 139, 139));
 		LogOut.setBounds(865, 34, 120, 35);
 		frame.getContentPane().add(LogOut);
+		
+		
+		JButton inv_btn = new JButton("Inventory");
+		inv_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Inventory inv = new Inventory(emp_id);
+				inv.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
+		inv_btn.setForeground(Color.WHITE);
+		inv_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		inv_btn.setBackground(new Color(0, 139, 139));
+		inv_btn.setBounds(625, 34, 109, 35);
+		frame.getContentPane().add(inv_btn);
+		
+		JButton pos_btn = new JButton("Terminal");
+		pos_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				POS pos = new POS(emp_id);
+				pos.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
+		pos_btn.setForeground(Color.WHITE);
+		pos_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		pos_btn.setBackground(new Color(0, 139, 139));
+		pos_btn.setBounds(746, 34, 109, 35);
+		frame.getContentPane().add(pos_btn);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("HRIS Records");
 		lblNewLabel_1_1.setForeground(Color.BLACK);
@@ -187,6 +210,8 @@ public class Admin {
 		lblSales.setBounds(39, 119, 152, 39);
 		NetSales.add(lblSales);
 		
+		
+		
 		JLabel GoShopperAdmin_Logo = new JLabel();
 		Image adminlogo = new ImageIcon(this.getClass().getResource("/LogoAdmin.png")).getImage();
 		GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));
@@ -198,5 +223,6 @@ public class Admin {
 		GoShopperAdmin_Logo_1.setIcon(new ImageIcon(bg));
 		GoShopperAdmin_Logo_1.setBounds(0, 0, 1006, 685);
 		frame.getContentPane().add(GoShopperAdmin_Logo_1);
+	
 	}
 }

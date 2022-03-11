@@ -3,6 +3,8 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -14,13 +16,14 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
-public class POSSearch {
+public class POSSearch extends SQLConnect {
 
-	private JFrame frame;
+	JFrame frame;
 
 	private  String[] columns = {"SKU", "Item", "Price"};
     private Object[][] data = {};
@@ -34,22 +37,21 @@ public class POSSearch {
      private JTextField txtsearch;
      private JTextField textField_1;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					POSSearch window = new POSSearch();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	
+	public void updateTable() {
+		  model.setRowCount(0);
+		try{
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Inventory");
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+		    	model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+		    }
+             
+ 	 }catch(HeadlessException | SQLException ex){
+ 		 JOptionPane.showMessageDialog(null, ex );
+      }
 	}
-
 	/**
 	 * Create the application.
 	 */
@@ -61,29 +63,16 @@ public class POSSearch {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		updateTable();
 		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = new Dimension (647, 460);
         
         frame = new JFrame("GoShopper Inventory");
         frame.getContentPane().setBackground(Color.WHITE);
         frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,frameSize.width, frameSize.height);
-
-        //Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
-        //frame.setIconImage(icon);
-        frame.addWindowListener(new WindowAdapter() {
-              public void windowClosing(WindowEvent e) {
-                int confirmed = JOptionPane.showConfirmDialog(null, 
-                    "Are you sure you want to exit the program?", "Exit Program Message Box",
-                    JOptionPane.YES_NO_OPTION);
-
-                if (confirmed == JOptionPane.YES_OPTION) {
-                    frame.dispose();
-                }
-                else {
-                    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                }
-              }
-            });
+        Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+        frame.setIconImage(icon);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null); 
         
         JTable table = new JTable(model);

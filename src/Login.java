@@ -23,9 +23,10 @@ import java.awt.event.ActionEvent;
 
 public class Login extends SQLConnect {
 
-	private JFrame frame;
+	JFrame frame;
 	private JTextField loginUser;
 	private JPasswordField loginPassword;
+	private String empid;
 
 	/**
 	 * Launch the application.
@@ -136,7 +137,7 @@ public class Login extends SQLConnect {
         login_btn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		   try {
-        			   String user = null, passw = null, empid = null, type = null; 
+        			   String user = null, passw = null, type = null; 
         	           con = DriverManager.getConnection(connectionUrl);
         	           ps = con.prepareStatement("SELECT * FROM Users WHERE username = ? AND password = ? ");
         	           ps.setString(1, loginUser.getText());
@@ -156,14 +157,18 @@ public class Login extends SQLConnect {
         	            }
         	            else if(loginUser.getText().equals(user) && String.valueOf(loginPassword.getPassword()).equals(passw)) {
         	            	if(String.valueOf(loginRoles.getSelectedItem()).equals("Terminal")) {
-        	            		
+        	            		POS pos = new POS(empid);
+        	    				pos.frame.setVisible(true);
+        	    				frame.dispose();
         	            	}else if (String.valueOf(loginRoles.getSelectedItem()).equals("Inventory")) {
         	            		Inventory inv = new Inventory(empid);
         	    				inv.frame.setVisible(true);
         	    				frame.dispose();
         	            	}else if (String.valueOf(loginRoles.getSelectedItem()).equals("Admin")) {
         	            		if(type.equals("admin")) {
-        	            			JOptionPane.showMessageDialog(null,"Admin.");
+        	            			Admin window = new Admin(empid);
+        	    					window.frame.setVisible(true);
+        	    					frame.dispose();
         	            		}else {
         	            			JOptionPane.showMessageDialog(null,"You are not an Admin.");
         	            		}

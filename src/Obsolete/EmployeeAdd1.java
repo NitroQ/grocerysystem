@@ -1,9 +1,11 @@
+package Obsolete;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -12,64 +14,38 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Component;
 import javax.swing.table.TableModel;
+
+import SQLConnect;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.SystemColor;
 import javax.swing.UIManager;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.AbstractListModel;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
 
-public class EmployeeAdd {
+public class EmployeeAdd1 extends SQLConnect{
 
-	private JFrame frame;
-	private JScrollPane scrollPane;
-    private  String[] columns = {"Employee Number", "Employee Name", "Role", "Hours", "DTR"};
-    private Object[][] data = {};
-     @SuppressWarnings("serial")
-     private DefaultTableModel model = new DefaultTableModel(data, columns) {
-         @Override
-           public boolean isCellEditable(int row, int column) {
-               return false;
-           }
-     };
-     private JTextField txtFName;
-     private JTextField txtLName;
-     private JTextField txtUsername;
-     private JTextField txtEmail;
+	JFrame frame;
+     private JTextField txtFName, txtLName, txtUsername, txtEmail, txtAge,txtAddress;
      private JPasswordField fieldPassword;
-     private JTextField txtAge;
-     private JTextField txtAddress;
+     private JComboBox  cmbPosition, cmbGender;
+     private JCheckBox chckUser;
 
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EmployeeAdd window = new EmployeeAdd();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
-	public EmployeeAdd() {
+	public EmployeeAdd1() {
 		initialize();
 	}
 
@@ -80,7 +56,7 @@ public class EmployeeAdd {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 718, 772);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		txtUsername = new JTextField();
@@ -132,14 +108,57 @@ public class EmployeeAdd {
 		lblRole.setBounds(363, 379, 293, 21);
 		frame.getContentPane().add(lblRole);
 		
-		JComboBox cmdPosition = new JComboBox();
-		cmdPosition.setFont(new Font("Dialog", Font.PLAIN, 12));
-		cmdPosition.setModel(new DefaultComboBoxModel(new String[] {"Merch", "Cashier", "Manager"}));
-		cmdPosition.setBackground(new Color(245, 245, 245));
-		cmdPosition.setBounds(363, 411, 294, 31);
-		frame.getContentPane().add(cmdPosition);
+		cmbPosition = new JComboBox();
+		cmbPosition.setFont(new Font("Dialog", Font.PLAIN, 12));
+		cmbPosition.setModel(new DefaultComboBoxModel(new String[] {"Merchandiser", "Cashier", "Manager"}));
+		cmbPosition.setBackground(new Color(245, 245, 245));
+		cmbPosition.setBounds(363, 411, 294, 31);
+		frame.getContentPane().add(cmbPosition);
 		
 		JButton btnEdit = new JButton("Save");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String emp_id = null;
+				try{
+				    con = DriverManager.getConnection(connectionUrl);
+				    ps = con.prepareStatement("INSERT INTO Employee (fname, lname, email, address, position, gender, age) VALUES (?,?,?,?,?,?,?)");
+		             ps.setString(1, txtFName.getText() );
+		             ps.setString(2, txtLName.getText());
+		             ps.setString(3, txtEmail.getText());
+		             ps.setString(4, txtAddress.getText());
+		             ps.setString(5, String.valueOf(cmbPosition.getSelectedItem()).equals("Merchandiser") ? "Merch" : String.valueOf(cmbPosition.getSelectedItem()) );
+		             ps.setString(6, String.valueOf(cmbGender.getSelectedItem()).equals("Female") ? "F" : "M" );
+		             ps.setString(7, txtAge.getText());
+		             ps.executeUpdate();
+		             
+
+		 		    ps = con.prepareStatement("SELECT * FROM Employee WHERE fname = ? AND email = ? AND address = ?");
+		 		   ps.setString(1, txtFName.getText() );
+		             ps.setString(2, txtEmail.getText());
+		             ps.setString(3, txtAddress.getText());
+		 		    rs = ps.executeQuery();
+		 		    while(rs.next()) {
+		 		    	emp_id = rs.getString("id");
+		 		    }
+		 		    
+		 		    if(emp_id == null) {
+		 		    	JOptionPane.showMessageDialog(null, "Error Occurred");
+		 		    }else {
+		 		    	  ps = con.prepareStatement("INSERT INTO Users (emp_id, username, password, user_type) VALUES  (?,?,?,?)");
+				             ps.setString(1, emp_id);
+				             ps.setString(2, txtUsername.getText());
+				             ps.setString(3, String.valueOf(fieldPassword.getPassword()));
+				             ps.setString(4, chckUser.isSelected() ? "admin" : "emp" );
+				             ps.executeUpdate();
+		 		    }
+		             JOptionPane.showMessageDialog(null, "Added");
+		             frame.dispose();
+		                
+		    	 }catch(HeadlessException | SQLException ex){
+		    		 JOptionPane.showMessageDialog(null, ex );
+		         }
+			}
+		});
 		btnEdit.setForeground(Color.WHITE);
 		btnEdit.setFont(new Font("Roboto", Font.BOLD, 14));
 		btnEdit.setBackground(new Color(204, 102, 102));
@@ -149,6 +168,7 @@ public class EmployeeAdd {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
 			}
 		});
 		btnCancel.setForeground(Color.WHITE);
@@ -174,7 +194,7 @@ public class EmployeeAdd {
 		lblGender.setBounds(28, 453, 294, 21);
 		frame.getContentPane().add(lblGender);
 		
-		JComboBox cmbGender = new JComboBox();
+		cmbGender = new JComboBox();
 		cmbGender.setFont(new Font("Dialog", Font.PLAIN, 12));
 		cmbGender.setModel(new DefaultComboBoxModel(new String[] {"Female", "Male"}));
 		cmbGender.setBounds(28, 485, 294, 31);
@@ -195,7 +215,7 @@ public class EmployeeAdd {
 		lblUser.setBounds(28, 538, 293, 21);
 		frame.getContentPane().add(lblUser);
 		
-		JCheckBox chckUser = new JCheckBox("Admin");
+		chckUser = new JCheckBox("Admin");
 		chckUser.setFont(new Font("Dialog", Font.PLAIN, 12));
 		chckUser.setBounds(28, 569, 97, 31);
 		frame.getContentPane().add(chckUser);

@@ -1,9 +1,12 @@
+package Obsolete;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -12,71 +15,78 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Component;
 import javax.swing.table.TableModel;
+
+import SQLConnect;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JPasswordField;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 
-public class EmployeeEdit {
+public class EmployeeEdit1 extends SQLConnect {
 
-	private JFrame frame;
-	private JScrollPane scrollPane;
-    private  String[] columns = {"Employee Number", "Employee Name", "Role", "Hours", "DTR"};
-    private Object[][] data = {};
-     @SuppressWarnings("serial")
-     private DefaultTableModel model = new DefaultTableModel(data, columns) {
-         @Override
-           public boolean isCellEditable(int row, int column) {
-               return false;
-           }
-     };
-     private JTextField txtEditFName;
-     private JTextField txtEditLName;
-     private JTextField txtEditAddress;
-     private JTextField txtEditUsername;
-     private JTextField txtEditEmail;
+	JFrame frame;
+     private JTextField txtEditFName, txtEditLName,txtEditAddress,txtEditUsername, txtEditEmail,txtEditAge;
      private JPasswordField fieldEditPassword;
-     private JTextField txtEditAge;
+     private JComboBox cmbEditGender, cmbEditRole;
+     private  JCheckBox chckEditUser;
+     private String id, Fname, Lname, Address, Username, Email, Age, Gender, Role, Password;
+     private Boolean user_type;
 
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EmployeeEdit window = new EmployeeEdit();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
-	public EmployeeEdit() {
+	public EmployeeEdit1(String id) {
+		this.id = id;
 		initialize();
 	}
 
+	public void find() {
+		try{
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Employee WHERE id = ?");
+		    ps.setString(1, id);
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+			   Fname = rs.getString("fname");
+			   Lname = rs.getString("lname");
+			   Address = rs.getString("address");
+			   Email = rs.getString("email");
+			   Age = rs.getString("age");
+			   Gender = rs.getString("gender");
+			   Role = rs.getString("position");
+		    }
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Users WHERE emp_id = ?");
+		    ps.setString(1, id);
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+			   Username = rs.getString("username");
+			   Password = rs.getString("password");
+			   user_type = rs.getString("user_type").equals("admin") ? true : false;
+		    }
+			   
+    	 }catch(HeadlessException | SQLException ex){
+    		 JOptionPane.showMessageDialog(null, ex );
+         }
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		find();
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 718, 772);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel EditEmployeeText = new JLabel("Edit Employee");
@@ -91,7 +101,7 @@ public class EmployeeEdit {
 		lblEditFName.setBounds(28, 145, 294, 21);
 		frame.getContentPane().add(lblEditFName);
 		
-		txtEditFName = new JTextField();
+		txtEditFName = new JTextField(Fname);
 		txtEditFName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 		txtEditFName.setBackground(new Color(245, 245, 245));
 		txtEditFName.setBounds(28, 177, 294, 29);
@@ -104,7 +114,7 @@ public class EmployeeEdit {
 		lblEditLName.setBounds(363, 145, 294, 21);
 		frame.getContentPane().add(lblEditLName);
 		
-		txtEditLName = new JTextField();
+		txtEditLName = new JTextField(Lname);
 		txtEditLName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 		txtEditLName.setColumns(10);
 		txtEditLName.setBackground(new Color(245, 245, 245));
@@ -117,14 +127,52 @@ public class EmployeeEdit {
 		lblEditGender.setBounds(28, 444, 325, 21);
 		frame.getContentPane().add(lblEditGender);
 		
-		JComboBox cmbEditGender = new JComboBox();
+		cmbEditGender = new JComboBox();
 		cmbEditGender.setModel(new DefaultComboBoxModel(new String[] {"Female", "Male"}));
+		cmbEditGender.setSelectedItem(Gender.equals("F") ? "Female" : "Male");
 		cmbEditGender.setFont(new Font("Dialog", Font.PLAIN, 12));
 		cmbEditGender.setBackground(new Color(245, 245, 245));
 		cmbEditGender.setBounds(28, 482, 294, 29);
 		frame.getContentPane().add(cmbEditGender);
 		
 		JButton btnEdit = new JButton("Save");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+				    con = DriverManager.getConnection(connectionUrl);
+				    ps = con.prepareStatement("UPDATE Employee SET fname = ?, lname = ?, email= ?, address = ?, position = ?, gender = ?, age= ? WHERE id = ? ");
+		             ps.setString(1, txtEditFName.getText());
+		             ps.setString(2, txtEditLName.getText());
+		             ps.setString(3, txtEditEmail.getText());
+		             ps.setString(4, txtEditAddress.getText());
+		             ps.setString(5, String.valueOf(cmbEditRole.getSelectedItem()).equals("Merchandiser") ? "Merch" : String.valueOf(cmbEditRole.getSelectedItem()) );
+		             ps.setString(6, String.valueOf(cmbEditGender.getSelectedItem()).equals("Female") ? "F" : "M" );
+		             ps.setString(7, txtEditAge.getText());
+		             ps.setString(8, id);
+		             ps.executeUpdate();
+		             
+
+		             ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
+		             ps.setString(1, txtEditUsername.getText());
+		             if(fieldEditPassword.getPassword() != null || !String.valueOf(fieldEditPassword.getPassword()).equals("")) {
+		            	 ps.setString(2, String.valueOf(fieldEditPassword.getPassword()));
+		             }else {
+		            	 ps.setString(2, Password);
+		             }
+		             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
+		             ps.setString(4, id);
+		             ps.executeUpdate();
+		             
+		             JOptionPane.showMessageDialog(null, "Updated");
+		            
+		             frame.dispose();
+		             
+		             
+				 }catch(HeadlessException | SQLException ex){
+		    		 JOptionPane.showMessageDialog(null, ex );
+		         }
+			}
+		});
 		btnEdit.setForeground(Color.WHITE);
 		btnEdit.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
 		btnEdit.setBackground(new Color(220, 20, 60));
@@ -134,6 +182,7 @@ public class EmployeeEdit {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
 			}
 		});
 		btnCancel.setForeground(Color.WHITE);
@@ -148,7 +197,7 @@ public class EmployeeEdit {
 		lblEditAddress.setBounds(28, 217, 294, 21);
 		frame.getContentPane().add(lblEditAddress);
 		
-		txtEditAddress = new JTextField();
+		txtEditAddress = new JTextField(Address);
 		txtEditAddress.setBackground(new Color(245, 245, 245));
 		txtEditAddress.setBounds(28, 249, 629, 29);
 		frame.getContentPane().add(txtEditAddress);
@@ -159,7 +208,7 @@ public class EmployeeEdit {
 		lblEditUsername.setBounds(28, 301, 294, 21);
 		frame.getContentPane().add(lblEditUsername);
 		
-		txtEditUsername = new JTextField();
+		txtEditUsername = new JTextField(Username);
 		txtEditUsername.setBackground(new Color(245, 245, 245));
 		txtEditUsername.setBounds(28, 333, 294, 29);
 		frame.getContentPane().add(txtEditUsername);
@@ -175,7 +224,7 @@ public class EmployeeEdit {
 		lblEditEmail.setBounds(363, 301, 294, 21);
 		frame.getContentPane().add(lblEditEmail);
 		
-		txtEditEmail = new JTextField();
+		txtEditEmail = new JTextField(Email);
 		txtEditEmail.setBackground(new Color(245, 245, 245));
 		txtEditEmail.setBounds(363, 333, 294, 29);
 		frame.getContentPane().add(txtEditEmail);
@@ -196,9 +245,10 @@ public class EmployeeEdit {
 		lblEditRole.setBounds(363, 373, 294, 21);
 		frame.getContentPane().add(lblEditRole);
 		
-		JComboBox cmbEditRole = new JComboBox();
+		cmbEditRole = new JComboBox();
 		cmbEditRole.setFont(new Font("Dialog", Font.PLAIN, 12));
-		cmbEditRole.setModel(new DefaultComboBoxModel(new String[] {"Merch", "Cashier", "Manager"}));
+		cmbEditRole.setModel(new DefaultComboBoxModel(new String[] {"Merchandiser", "Cashier", "Manager"}));
+		cmbEditRole.setSelectedItem(Role.equals("Merch") ? "Merchandiser" : Role );
 		cmbEditRole.setBounds(363, 403, 294, 29);
 		frame.getContentPane().add(cmbEditRole);
 		
@@ -207,7 +257,7 @@ public class EmployeeEdit {
 		lblEditAge.setBounds(363, 444, 294, 21);
 		frame.getContentPane().add(lblEditAge);
 		
-		txtEditAge = new JTextField();
+		txtEditAge = new JTextField(Age);
 		txtEditAge.setBackground(new Color(245, 245, 245));
 		txtEditAge.setBounds(363, 483, 294, 29);
 		frame.getContentPane().add(txtEditAge);
@@ -218,7 +268,8 @@ public class EmployeeEdit {
 		lblEditUser.setBounds(28, 522, 295, 21);
 		frame.getContentPane().add(lblEditUser);
 		
-		JCheckBox chckEditUser = new JCheckBox("Admin");
+		chckEditUser = new JCheckBox("Admin");
+		chckEditUser.setSelected(user_type);
 		chckEditUser.setFont(new Font("Dialog", Font.PLAIN, 12));
 		chckEditUser.setBounds(28, 550, 97, 31);
 		frame.getContentPane().add(chckEditUser);

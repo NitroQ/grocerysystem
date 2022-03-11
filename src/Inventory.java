@@ -18,10 +18,13 @@ import java.awt.HeadlessException;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 public class Inventory extends SQLConnect{
@@ -31,7 +34,7 @@ public class Inventory extends SQLConnect{
 	private JTable table, tablehistory, tablelow;
 	
 	
-	private  String[] prodcolumns = {"ID", "SKU", "Product Name", "Stock", "Cost", "Price"};
+	private  String[] prodcolumns = {"SKU", "Product Name", "Stock", "Cost", "Price"};
 	 private Object[][] proddata = {};
 	  @SuppressWarnings("serial")
 	private DefaultTableModel prodmodel = new DefaultTableModel(proddata, prodcolumns) {
@@ -88,8 +91,7 @@ public class Inventory extends SQLConnect{
 		    	String prodname = rs.getString("prod_name");
 		    	String sku = rs.getString("sku");
 		    	String qty = rs.getString("qty");
-		    	prodmodel.addRow(new Object[]{rs.getString("id"),sku,prodname,qty,
-		    			rs.getString("cost"), rs.getString("price")});
+		    	prodmodel.addRow(new Object[]{sku, prodname, qty, rs.getString("cost"), rs.getString("price")});
 		    	
 		    	if(Integer.parseInt(qty)<= 50) {
 		    		lowmodel.addRow(new Object[] {
@@ -159,7 +161,6 @@ public class Inventory extends SQLConnect{
 		table.getColumnModel().getColumn(0).setPreferredWidth(15);
 		table.getColumnModel().getColumn(3).setPreferredWidth(15);
 		table.getColumnModel().getColumn(4).setPreferredWidth(15);
-		table.getColumnModel().getColumn(5).setPreferredWidth(15);
 		table.setRowHeight(30);
 		table.setBounds(24, 174, 956, 329);
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -192,14 +193,24 @@ public class Inventory extends SQLConnect{
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
-				InventoryEdit edit_inv = new InventoryEdit(String.valueOf(table.getModel().getValueAt(row, 0)));
-				edit_inv.frame.setVisible(true);
+				
+				if(row != -1) {
+					InventoryEdit edit_inv = new InventoryEdit(String.valueOf(table.getModel().getValueAt(row, 0)));
+					edit_inv.frame.setVisible(true);
+				}else {
+					JOptionPane.showMessageDialog(null, "No Selected Item");
+				}
+				
 			}
 		});
 		btnEdit.setBounds(784, 133, 89, 30);
 		frame.getContentPane().add(btnEdit);
 		
 		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnDelete.setForeground(new Color(255, 255, 255));
 		btnDelete.setBackground(new Color(220, 20, 60));
 		btnDelete.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
@@ -223,25 +234,42 @@ public class Inventory extends SQLConnect{
 		Window_Name_2.setBounds(34, 129, 288, 43);
 		frame.getContentPane().add(Window_Name_2);
 		
-		JButton emp_btn = new JButton("Employee");
-		emp_btn.setForeground(new Color(255, 255, 255));
-		emp_btn.setBackground(new Color(0, 139, 139));
-		emp_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
-		emp_btn.addActionListener(new ActionListener() {
+		JButton admin_btn = new JButton("Admin");
+		admin_btn.setForeground(new Color(255, 255, 255));
+		admin_btn.setBackground(new Color(0, 139, 139));
+		admin_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		admin_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Admin window = new Admin(emp_id);
+				window.frame.setVisible(true);
+				frame.dispose();
 			}
 		});
-		emp_btn.setBounds(630, 33, 109, 35);
-		frame.getContentPane().add(emp_btn);
+		admin_btn.setBounds(630, 33, 109, 35);
+		frame.getContentPane().add(admin_btn);
 		
-		JButton inv_btn = new JButton("Inventory");
-		inv_btn.setForeground(new Color(255, 255, 255));
-		inv_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
-		inv_btn.setBackground(new Color(0, 139, 139));
-		inv_btn.setBounds(751, 33, 109, 35);
-		frame.getContentPane().add(inv_btn);
+		JButton pos_btn = new JButton("Terminal");
+		pos_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				POS pos = new POS(emp_id);
+				pos.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
+		pos_btn.setForeground(new Color(255, 255, 255));
+		pos_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		pos_btn.setBackground(new Color(0, 139, 139));
+		pos_btn.setBounds(751, 33, 109, 35);
+		frame.getContentPane().add(pos_btn);
 		
 		JButton logout_btn = new JButton("Logout");
+		logout_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Login log_in = new Login();
+				log_in.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 		logout_btn.setForeground(new Color(255, 255, 255));
 		logout_btn.setBackground(new Color(0, 139, 139));
 		logout_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
@@ -265,7 +293,322 @@ public class Inventory extends SQLConnect{
 		GoShopper_BG.setBounds(0, 0, 1006, 685);
 		frame.getContentPane().add(GoShopper_BG);
 		
+	}
 
 
+class InventoryAdd {
+
+	JFrame frame;
+	private JTextField prodname;
+	private JTextField prodsku;
+	private JTextField prodqty;
+	private JTextField prodprice;
+	private JTextField prodcost;
+
+
+	public InventoryAdd() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension frameSize = new Dimension (473, 367);
+		
+		frame = new JFrame("GoShopper Inventory");
+		frame.getContentPane().setBackground(Color.WHITE);
+		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 568);
+		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+		frame.setIconImage(icon);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setBounds(24, 25, 211, 50);
+		Image img = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
+		lblNewLabel.setIcon(new ImageIcon(img));
+		frame.getContentPane().add(lblNewLabel);
+		
+		JLabel Window_Name = new JLabel("Add Product");
+		Window_Name.setBounds(24, 86, 288, 43);
+		Window_Name.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
+		frame.getContentPane().add(Window_Name);
+		
+		prodname = new JTextField();
+		prodname.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodname.setBackground(new Color(245, 245, 245));
+		prodname.setBounds(24, 165, 412, 35);
+		frame.getContentPane().add(prodname);
+		prodname.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("Product Name");
+		lblNewLabel_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1.setBounds(24, 133, 111, 22);
+		frame.getContentPane().add(lblNewLabel_1);
+		
+		prodsku = new JTextField();
+		prodsku.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodsku.setBackground(new Color(245, 245, 245));
+		prodsku.setColumns(10);
+		prodsku.setBounds(24, 243, 412, 35);
+		frame.getContentPane().add(prodsku);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("Stock Keeping Unit (SKU)");
+		lblNewLabel_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1.setBounds(24, 210, 233, 22);
+		frame.getContentPane().add(lblNewLabel_1_1);
+		
+		prodqty = new JTextField();
+		prodqty.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodqty.setBackground(new Color(245, 245, 245));
+		prodqty.setColumns(10);
+		prodqty.setBounds(24, 321, 412, 35);
+		frame.getContentPane().add(prodqty);
+		
+		JLabel lblNewLabel_1_1_1 = new JLabel("Quantity");
+		lblNewLabel_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1_1.setBounds(24, 288, 155, 22);
+		frame.getContentPane().add(lblNewLabel_1_1_1);
+		
+		prodprice = new JTextField();
+		prodprice.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodprice.setBackground(new Color(245, 245, 245));
+		prodprice.setColumns(10);
+		prodprice.setBounds(24, 399, 198, 35);
+		frame.getContentPane().add(prodprice);
+		
+		JLabel lblNewLabel_1_1_1_1 = new JLabel("Price");
+		lblNewLabel_1_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1_1_1.setBounds(24, 367, 182, 22);
+		frame.getContentPane().add(lblNewLabel_1_1_1_1);
+		
+		prodcost = new JTextField();
+		prodcost.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodcost.setBackground(new Color(245, 245, 245));
+		prodcost.setColumns(10);
+		prodcost.setBounds(232, 399, 204, 35);
+		frame.getContentPane().add(prodcost);
+		
+		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Cost");
+		lblNewLabel_1_1_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1_1_1_1.setBounds(232, 367, 182, 22);
+		frame.getContentPane().add(lblNewLabel_1_1_1_1_1);
+		
+		JButton add_btn = new JButton("Save");
+		add_btn.setBackground(new Color(220, 20, 60));
+		add_btn.setForeground(new Color(255, 255, 255));
+		add_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		add_btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try{
+					String query = "INSERT INTO Inventory (sku, prod_name, qty, price, cost) VALUES (?,?,?,?,?)";
+				    con = DriverManager.getConnection(connectionUrl);
+				    ps = con.prepareStatement(query);
+		             ps.setString(1, prodsku.getText());
+		             ps.setString(2, prodname.getText());
+		             ps.setString(3, prodqty.getText());
+		             ps.setString(4, prodprice.getText());
+		             ps.setString(5, prodcost.getText());
+		             ps.executeUpdate();   
+		             JOptionPane.showMessageDialog(null, "Added");
+		             updateTable();
+		             frame.dispose();
+		                
+		    	 }catch(HeadlessException | SQLException ex){
+		    		 JOptionPane.showMessageDialog(null, ex );
+		         }
+				
+			}
+		});
+		add_btn.setBounds(29, 456, 109, 43);
+		frame.getContentPane().add(add_btn);
+		
+		JButton cancel_btn = new JButton("Cancel");
+		cancel_btn.setBackground(new Color(0, 139, 139));
+		cancel_btn.setForeground(new Color(255, 255, 255));
+		cancel_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		cancel_btn.setBounds(148, 456, 109, 43);
+		cancel_btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame.dispose();
+			}
+		});
+		frame.getContentPane().add(cancel_btn);
+		
 	}
 }
+
+class InventoryEdit {
+
+	JFrame frame;
+	private JTextField prodname;
+	private JTextField prodsku;
+	private JTextField prodqty;
+	private JTextField prodprice;
+	private JTextField prodcost;
+	private String prod_id, sku, prod_name, qty, price, cost;
+
+	public InventoryEdit(String prod_id) {
+		this.prod_id = prod_id;
+		initialize();
+	}
+
+	public void find() {
+		try{
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ?");
+		    ps.setString(1, prod_id);
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+			    sku = rs.getString("sku");
+			    prod_name = rs.getString("prod_name");
+			    qty = rs.getString("qty");
+			    price = rs.getString("price");
+			    cost = rs.getString("cost");
+		    }
+    	 }catch(HeadlessException | SQLException ex){
+    		 JOptionPane.showMessageDialog(null, ex );
+         }
+	}
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension frameSize = new Dimension (473, 367);
+		find();
+		
+		frame = new JFrame("GoShopper Inventory");
+		frame.getContentPane().setBackground(new Color(255, 255, 255));
+		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 568);
+		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+		frame.setIconImage(icon);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		Image img = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
+		frame.getContentPane().setLayout(null);
+		
+		JLabel Window_Name = new JLabel("Edit Product");
+		Window_Name.setBounds(24, 86, 288, 43);
+		Window_Name.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
+		frame.getContentPane().add(Window_Name);
+		
+		prodname = new JTextField(prod_name);
+		prodname.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodname.setBackground(new Color(245, 245, 245));
+		prodname.setBounds(24, 165, 412, 35);
+		frame.getContentPane().add(prodname);
+		prodname.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("Product Name");
+		lblNewLabel_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1.setBounds(24, 133, 106, 22);
+		frame.getContentPane().add(lblNewLabel_1);
+		
+		prodsku = new JTextField(sku);
+		prodsku.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodsku.setBackground(new Color(245, 245, 245));
+		prodsku.setEditable(false);
+		prodsku.setColumns(10);
+		prodsku.setBounds(24, 243, 412, 35);
+		frame.getContentPane().add(prodsku);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("Stock Keeping Unit (SKU)");
+		lblNewLabel_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1.setBounds(24, 211, 187, 22);
+		frame.getContentPane().add(lblNewLabel_1_1);
+		
+		prodqty = new JTextField(qty);
+		prodqty.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodqty.setBackground(new Color(245, 245, 245));
+		prodqty.setColumns(10);
+		prodqty.setBounds(24, 321, 412, 35);
+		frame.getContentPane().add(prodqty);
+		
+		JLabel lblNewLabel_1_1_1 = new JLabel("Quantity");
+		lblNewLabel_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1_1.setBounds(24, 289, 155, 22);
+		frame.getContentPane().add(lblNewLabel_1_1_1);
+		
+		prodprice = new JTextField(price);
+		prodprice.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodprice.setBackground(new Color(245, 245, 245));
+		prodprice.setColumns(10);
+		prodprice.setBounds(24, 399, 198, 35);
+		frame.getContentPane().add(prodprice);
+		
+		JLabel lblNewLabel_1_1_1_1 = new JLabel("Price");
+		lblNewLabel_1_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1_1_1.setBounds(24, 367, 182, 22);
+		frame.getContentPane().add(lblNewLabel_1_1_1_1);
+		
+		prodcost = new JTextField(cost);
+		prodcost.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+		prodcost.setBackground(new Color(245, 245, 245));
+		prodcost.setColumns(10);
+		prodcost.setBounds(232, 399, 204, 35);
+		frame.getContentPane().add(prodcost);
+		
+		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Cost");
+		lblNewLabel_1_1_1_1_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+		lblNewLabel_1_1_1_1_1.setBounds(232, 367, 182, 22);
+		frame.getContentPane().add(lblNewLabel_1_1_1_1_1);
+		
+		JButton add_btn = new JButton("Save");
+		add_btn.setBackground(new Color(220, 20, 60));
+		add_btn.setForeground(new Color(255, 255, 255));
+		add_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		add_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					String query = "UPDATE Inventory SET prod_name = ?, qty = ?, price = ?, cost = ? WHERE sku = ?";
+				    con = DriverManager.getConnection(connectionUrl);
+				    ps = con.prepareStatement(query);
+		             ps.setString(1, prodname.getText());
+		             ps.setString(2, prodqty.getText());
+		             ps.setString(3, prodprice.getText());
+		             ps.setString(4, prodcost.getText());
+		             ps.setString(5, prod_id);
+		             ps.executeUpdate();
+		             JOptionPane.showMessageDialog(null, "Updated");
+		             updateTable();
+		             frame.dispose();
+		                
+		    	 }catch(HeadlessException | SQLException ex){
+		    		 JOptionPane.showMessageDialog(null, ex );
+		         }
+				
+			}
+		});
+		add_btn.setBounds(24, 456, 114, 43);
+		frame.getContentPane().add(add_btn);
+		
+		JButton cancel_btn = new JButton("Cancel");
+		cancel_btn.setBackground(new Color(0, 139, 139));
+		cancel_btn.setForeground(new Color(255, 255, 255));
+		cancel_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+		cancel_btn.setBounds(148, 456, 109, 43);
+		cancel_btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame.dispose();
+			}
+		});
+		frame.getContentPane().add(cancel_btn);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setFont(new Font("Segoe UI Variable", Font.PLAIN, 16));
+		Image img2 = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
+		lblNewLabel.setIcon(new ImageIcon(img2));
+		lblNewLabel.setBounds(24, 25, 211, 50);
+		frame.getContentPane().add(lblNewLabel);
+		
+	}
+}
+
+
+}
+
