@@ -573,7 +573,7 @@ class EmployeeAdd {
 					String emp_id = null;
 					try{
 					    con = DriverManager.getConnection(connectionUrl);
-					    ps = con.prepareStatement("INSERT INTO Employee (fname, lname, email, empaddress, position, gender, age) VALUES (?,?,?,?,?,?,?)");
+					    ps = con.prepareStatement("INSERT INTO Employee (fname, lname, email, empaddress, position, gender, age) VALUES (?,?,?,?,?,?,?);  SELECT @@IDENTITY AS 'identity';");
 			             ps.setString(1, txtFName.getText() );
 			             ps.setString(2, txtLName.getText());
 			             ps.setString(3, txtEmail.getText());
@@ -581,13 +581,6 @@ class EmployeeAdd {
 			             ps.setString(5, String.valueOf(cmbPosition.getSelectedItem()).equals("Merchandiser") ? "Merch" : String.valueOf(cmbPosition.getSelectedItem()) );
 			             ps.setString(6, String.valueOf(cmbGender.getSelectedItem()).equals("Female") ? "F" : "M" );
 			             ps.setString(7, txtAge.getText());
-			             ps.executeUpdate();
-			             
-
-			 		    ps = con.prepareStatement("SELECT * FROM Employee WHERE fname = ? AND email = ? AND empaddress = ?");
-			 		   ps.setString(1, txtFName.getText() );
-			             ps.setString(2, txtEmail.getText());
-			             ps.setString(3, txtAddress.getText());
 			 		    rs = ps.executeQuery();
 			 		    while(rs.next()) {
 			 		    	emp_id = rs.getString("emp_id");

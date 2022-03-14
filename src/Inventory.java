@@ -105,6 +105,14 @@ public class Inventory extends SQLConnect{
 		    		});
 		    	}
 		    }
+		    
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Logs WHERE loc = 'inventory'");
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+		    	String logging = rs.getString("family") + " " + rs.getString("remarks");  
+		    	historymodel.addRow(new Object[] { logging, rs.getString("log_date") });
+		    }
       
                 
     	 }catch(HeadlessException | SQLException ex){
@@ -445,6 +453,9 @@ class InventoryAdd {
 		             JOptionPane.showMessageDialog(null, "Added");
 		             updateTable();
 		             frame.dispose();
+		             
+		             String comment =    prodsku.getText() + " | " + prodname.getText() + " |q" +prodqty.getText() + "|c"+prodcost.getText() + "|p" + prodprice.getText();
+		             SQLConnect.createlog(SQLConnect.LogType.INSERT, emp_id, "inventory", comment);
 		                
 		    	 }catch(HeadlessException | SQLException ex){
 		    		 JOptionPane.showMessageDialog(null, ex );
@@ -606,6 +617,10 @@ class InventoryEdit {
 		             ps.setString(4, prodcost.getText());
 		             ps.setString(5, prod_id);
 		             ps.executeUpdate();
+		             
+		             String comment =    prodsku.getText() + " | " + prodname.getText() + " |q" +prodqty.getText() + "|c"+prodcost.getText() + "|p" + prodprice.getText();
+		             SQLConnect.createlog(SQLConnect.LogType.UPDATE, emp_id, "inventory", comment);
+		             
 		             JOptionPane.showMessageDialog(null, "Updated");
 		             updateTable();
 		             frame.dispose();

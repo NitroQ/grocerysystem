@@ -58,13 +58,10 @@ public class Admin extends SQLConnect {
 	public Admin(String emp_id, String type) {
 		this.emp_id = emp_id;
 		this.type = type;
-		
-		if(type.equals("admin")) {
-			initialize();
-		}else {
-			JOptionPane.showMessageDialog(null, "You are not an admin. Ending Program.");
-			System.exit(0);
-		}
+		initialize();
+
+
+
 	}
 
 	/**
@@ -198,6 +195,10 @@ public class Admin extends SQLConnect {
 		lblSales_2_1_1.setBounds(39, 92, 152, 39);
 		Profit_1.add(lblSales_2_1_1);
 		
+		JLabel lblNewLabel_3_3 = new JLabel("New label");
+		lblNewLabel_3_3.setBounds(27, 29, 184, 67);
+		Profit_1.add(lblNewLabel_3_3);
+		
 		JPanel Profit = new JPanel();
 		Profit.setLayout(null);
 		Profit.setBackground(new Color(0, 153, 102));
@@ -210,6 +211,10 @@ public class Admin extends SQLConnect {
 		lblSales_2.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales_2.setBounds(39, 119, 152, 39);
 		Profit.add(lblSales_2);
+		
+		JLabel lblNewLabel_3_2 = new JLabel("New label");
+		lblNewLabel_3_2.setBounds(24, 31, 184, 67);
+		Profit.add(lblNewLabel_3_2);
 		
 		JPanel CostGoods = new JPanel();
 		CostGoods.setLayout(null);
@@ -231,6 +236,10 @@ public class Admin extends SQLConnect {
 		lblSales_1.setBounds(39, 119, 152, 39);
 		CostGoods.add(lblSales_1);
 		
+		JLabel lblNewLabel_3_1 = new JLabel("New label");
+		lblNewLabel_3_1.setBounds(28, 23, 184, 67);
+		CostGoods.add(lblNewLabel_3_1);
+		
 		JPanel NetSales = new JPanel();
 		NetSales.setBackground(new Color(244, 164, 96));
 		NetSales.setBounds(37, 145, 231, 182);
@@ -250,6 +259,10 @@ public class Admin extends SQLConnect {
 		lblSales.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
 		lblSales.setBounds(39, 119, 152, 39);
 		NetSales.add(lblSales);
+		
+		JLabel lblNewLabel_3 = new JLabel("New label");
+		lblNewLabel_3.setBounds(23, 24, 184, 67);
+		NetSales.add(lblNewLabel_3);
 		
 		
 		
