@@ -1,5 +1,3 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -13,8 +11,6 @@ import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class Admin {
@@ -22,7 +18,6 @@ public class Admin {
 	 JFrame frame;
 	private String emp_id;
 	private JTable table_Sales;
-	private JScrollPane scrollPane;
     private  String[] columns = {"Purchase ID", "Purchase Sales", "Date"};
     private Object[][] data = {};
      @SuppressWarnings("serial")

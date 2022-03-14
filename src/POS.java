@@ -29,10 +29,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class POS extends SQLConnect{
 
@@ -41,7 +44,8 @@ public class POS extends SQLConnect{
     private JButton btn_Cancel,btn_Pay,btnNewButton_7, btnNewButton_8,btn_Print,btn_Void;
     private JTextField txt_Qt,skuinput,txt_Cash;
     private JLabel lbl_Skugoinput, lbl_Qt, GoShopperAdmin_Logo,lbl_Discount_2,lbl_Discount_1,lbl_Discount_3,GoShopper_BG,lbl_Discount_4,txt_change, lbl_Discount_6, lbl_Discount_7,lbl_Discount_8,lbl_Discount_9,txtView_Subtotal,txtView_Discount,txtView_VAT, txtView_GrandTotal,viewitem,viewprice;
-	JPanel panel;
+	private JComboBox jcb_GoDiscount, jcb_PaymentMethod;
+    JPanel panel;
     private String emp_id; 
     private Double grandtotal, change, cash;
 	private  String[] columns = {"SKU", "Item", "Quantity", "Price"};
@@ -192,6 +196,39 @@ public class POS extends SQLConnect{
         frame.getContentPane().add(btn_Cancel);
         
         btn_Pay = new JButton("Pay");
+        btn_Pay.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		String sale_id = "";
+        	
+    				try{
+    				    con = DriverManager.getConnection(connectionUrl);
+    				    ps = con.prepareStatement("INSERT INTO Sales (emp_id, payment, discount, total) VALUES (?,?,?,?); SELECT @@IDENTITY AS 'identity';");
+    		             ps.setString(1, emp_id);
+    		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
+    		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("GoDiscount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
+    		             ps.setString(4, grandtotal.toString());
+    		             rs = ps.executeQuery();
+    		             while(rs.next()) {
+    		            	 sale_id = rs.getString("identity");
+    		             }
+	            	 	for (int count = 0; count < model.getRowCount(); count++){
+        				    ps = con.prepareStatement("INSERT INTO Sold_Items (sale_id, sku, qty, item_total) VALUES (?,?,?,?)");
+        				     ps.setString(1, sale_id);
+        		             ps.setString(2, model.getValueAt(count, 0).toString());
+        		             ps.setString(3, model.getValueAt(count, 2).toString());
+        		             ps.setString(4, model.getValueAt(count, 3).toString());
+        		             ps.executeUpdate();
+    		   			}
+//    		             updateTable();
+    		             
+   		             JOptionPane.showMessageDialog(null, "Transaction Complete.");
+    		                
+    		    	 }catch(HeadlessException | SQLException ex){
+    		    		 JOptionPane.showMessageDialog(null, ex );
+    		         }
+
+        	}
+        });
         btn_Pay.setBackground(new Color(0, 139, 139));
         btn_Pay.setForeground(new Color(255, 255, 255));
         btn_Pay.setFont(new Font("Segoe UI Variable", Font.BOLD, 17));
@@ -225,10 +262,12 @@ public class POS extends SQLConnect{
         				   String value = rs.getString("price");
         				   String qty = txt_Qt.getText().equals("") ? "1" : txt_Qt.getText();
         				   String total = String.format("%.2f",Double.parseDouble(qty) * Double.parseDouble(value));
-           			  	model.addRow(new Object [] {rs.getString("sku"),prodname, qty , total  });
+           			  	model.addRow(new Object [] {rs.getString("sku"),prodname, qty , total });
 	           			viewitem.setText(prodname);
 	           			viewprice.setText(value);
 	           			updateTotal();
+	           			skuinput.setText("");
+	           			txt_Qt.setText("");
         			   }
         			 
             	 }catch(HeadlessException | SQLException ex){
@@ -284,10 +323,31 @@ public class POS extends SQLConnect{
         skuinput.setBounds(688, 137, 185, 35);
         frame.getContentPane().add(skuinput);
         
-        JComboBox jcb_GoDiscount = new JComboBox();
+       jcb_GoDiscount = new JComboBox();
         jcb_GoDiscount.setBackground(new Color(255, 255, 255));
         jcb_GoDiscount.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
-        jcb_GoDiscount.setModel(new DefaultComboBoxModel(new String[] {"GoDiscount"}));
+        jcb_GoDiscount.setModel(new DefaultComboBoxModel(new String[] {"GoDiscount", "PWD", "Senior", "Member"}));
+//        jcb_GoDiscount.addItemListener(new ItemListener() {
+//           	public void itemStateChanged(ItemEvent e) {
+//           		if(grandtotal != 0 || grandtotal != null) {
+//           			if(jcb_PaymentMethod.getSelectedItem().equals("PWD")) {
+//           				double pwd_dis = grandtotal * 0.20;
+//           				grandtotal = grandtotal -= pwd_dis;
+//           				txtView_GrandTotal.setText(String.valueOf(grandtotal));
+//           				txtView_Discount.setText(String.valueOf(pwd_dis));
+//           				
+//           			}else if(jcb_PaymentMethod.getSelectedItem().equals("Senior")) {
+//           				double sen_dis = grandtotal * 0.20;
+//           				grandtotal = grandtotal -= sen_dis;
+//           				txtView_GrandTotal.setText(String.valueOf(grandtotal));
+//           				txtView_Discount.setText(String.valueOf(sen_dis));
+//           			}else if(jcb_PaymentMethod.getSelectedItem().equals("Member")) {
+//           				
+//           			}
+//           		}
+//           
+//           	}
+//           });
         jcb_GoDiscount.setBounds(688, 273, 283, 35);
         frame.getContentPane().add(jcb_GoDiscount);
         
@@ -307,7 +367,7 @@ public class POS extends SQLConnect{
         txt_Cash.setBounds(688, 437, 283, 37);
         frame.getContentPane().add(txt_Cash);
         
-        JComboBox jcb_PaymentMethod = new JComboBox();
+        jcb_PaymentMethod = new JComboBox();
         jcb_PaymentMethod.setBackground(new Color(245, 245, 245));
         jcb_PaymentMethod.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
         jcb_PaymentMethod.setModel(new DefaultComboBoxModel(new String[] {"CASH", "VISA", "MASTER CARD"}));

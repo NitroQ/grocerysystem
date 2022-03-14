@@ -1,5 +1,4 @@
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -11,7 +10,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.HeadlessException;
@@ -21,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -131,7 +130,6 @@ public class Inventory extends SQLConnect{
 			    }
 			  }
 			});
-		Image img = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
 		frame.getContentPane().setLayout(null);
 		
 		JLabel Window_Name = new JLabel("Inventory Dashboard");
@@ -207,10 +205,33 @@ public class Inventory extends SQLConnect{
 		frame.getContentPane().add(btnEdit);
 		
 		JButton btnDelete = new JButton("Delete");
-		btnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+//		btnDelete.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				int row = table.getSelectedRow();
+//				if(row != -1) {
+//					try{
+//						String del = String.valueOf(table.getModel().getValueAt(row, 0)); 
+//					    con = DriverManager.getConnection(connectionUrl);
+//					    ps = con.prepareStatement("DELETE FROM Users WHERE emp_id = ?; DELETE FROM Employee WHERE emp_id = ?");
+//					    ps.setString(1, del);
+//					    ps.setString(2, del);
+//
+//					    int n = JOptionPane.showConfirmDialog(null, "Confirm Delete? \n this will also delete User Login" , "WARNING", JOptionPane.YES_NO_OPTION);
+//
+//					      if(n == JOptionPane.YES_OPTION) {
+//					          ps.executeUpdate();
+//					          updateTable();
+//					      }
+//				          
+//				 	 }catch(HeadlessException | SQLException ex){
+//				 		 JOptionPane.showMessageDialog(null, ex );
+//				      }
+//					
+//				}else {
+//					JOptionPane.showMessageDialog(null, "No Selected Item");
+//				}
+//			}
+//		});
 		btnDelete.setForeground(new Color(255, 255, 255));
 		btnDelete.setBackground(new Color(220, 20, 60));
 		btnDelete.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
@@ -488,7 +509,6 @@ class InventoryEdit {
 		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
 		frame.setIconImage(icon);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		Image img = new ImageIcon(this.getClass().getResource("/GoShopper3.png")).getImage();
 		frame.getContentPane().setLayout(null);
 		
 		JLabel Window_Name = new JLabel("Edit Product");
