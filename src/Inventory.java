@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
 public class Inventory extends SQLConnect{
 
 	JFrame frame;
-	private String emp_id;
+	private String emp_id, type;
 	private JTable table, tablehistory, tablelow;
 	
 	
@@ -71,11 +71,16 @@ public class Inventory extends SQLConnect{
 	/**
 	 * Create the application.
 	 */
-	public Inventory(String emp_id) {
+	public Inventory(String emp_id, String type) {
 		this.emp_id = emp_id;
+		this.type = type;
 		initialize();
 	}
 
+	public static void logs() {
+		
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -246,12 +251,13 @@ public class Inventory extends SQLConnect{
 		frame.getContentPane().add(Window_Name_2);
 		
 		JButton admin_btn = new JButton("Admin");
+	    admin_btn.setVisible(type.equals("admin")? true : false);
 		admin_btn.setForeground(new Color(255, 255, 255));
 		admin_btn.setBackground(new Color(0, 139, 139));
 		admin_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
 		admin_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Admin window = new Admin(emp_id);
+				Admin window = new Admin(emp_id, type);
 				window.frame.setVisible(true);
 				frame.dispose();
 			}
@@ -262,7 +268,7 @@ public class Inventory extends SQLConnect{
 		JButton pos_btn = new JButton("Terminal");
 		pos_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				POS pos = new POS(emp_id);
+				POS pos = new POS(emp_id, type);
 				pos.frame.setVisible(true);
 				frame.dispose();
 			}

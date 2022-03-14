@@ -23,4 +23,8 @@ public class SQLConnect {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void createlog( ) {
+		
+	}
 }

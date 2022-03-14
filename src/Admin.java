@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Color;
@@ -15,13 +16,15 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.table.DefaultTableModel;
 
-public class Admin {
+public class Admin extends SQLConnect {
 
 	 JFrame frame;
-	private String emp_id;
+	private String emp_id, type;
 	private JTable table_Sales;
     private  String[] columns = {"Purchase ID", "Purchase Sales", "Date"};
     private Object[][] data = {};
@@ -33,13 +36,35 @@ public class Admin {
            }
      };
 
+     
+ 	public void updateTable() {
+		  model.setRowCount(0);
+		try{
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Sales");
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+		    	model.addRow(new Object[]{rs.getString("sale_id"),rs.getString("total"), rs.getString("sale_date")});
+		    }
+           
+	 }catch(HeadlessException | SQLException ex){
+		 JOptionPane.showMessageDialog(null, ex );
+    }
+	}
 
 	/**
 	 * Create the application.
 	 */
-	public Admin(String emp_id) {
+	public Admin(String emp_id, String type) {
 		this.emp_id = emp_id;
-		initialize();
+		this.type = type;
+		
+		if(type.equals("admin")) {
+			initialize();
+		}else {
+			JOptionPane.showMessageDialog(null, "You are not an admin. Ending Program.");
+			System.exit(0);
+		}
 	}
 
 	/**
@@ -48,6 +73,7 @@ public class Admin {
 	private void initialize() {
 		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = new Dimension (1020, 700);
+        updateTable();
         
         frame = new JFrame("GoShopper Admin");
         frame.setResizable(false);
@@ -98,7 +124,7 @@ public class Admin {
 		JButton inv_btn = new JButton("Inventory");
 		inv_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Inventory inv = new Inventory(emp_id);
+				Inventory inv = new Inventory(emp_id, type);
 				inv.frame.setVisible(true);
 				frame.dispose();
 			}
@@ -112,7 +138,7 @@ public class Admin {
 		JButton pos_btn = new JButton("Terminal");
 		pos_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				POS pos = new POS(emp_id);
+				POS pos = new POS(emp_id, type);
 				pos.frame.setVisible(true);
 				frame.dispose();
 			}

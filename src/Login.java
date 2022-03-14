@@ -30,7 +30,7 @@ public class Login extends SQLConnect {
 	JFrame frame;
 	private JTextField loginUser;
 	private JPasswordField loginPassword;
-	private String empid;
+	private String empid, type;
 
 	/**
 	 * Launch the application.
@@ -137,7 +137,7 @@ public class Login extends SQLConnect {
         login_btn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		   try {
-        			   String user = null, passw = null, type = null; 
+        			   String user = null, passw = null; 
         	           con = DriverManager.getConnection(connectionUrl);
         	           ps = con.prepareStatement("SELECT * FROM Users WHERE username = ? AND password = ? ");
         	           ps.setString(1, loginUser.getText());
@@ -157,16 +157,16 @@ public class Login extends SQLConnect {
         	            }
         	            else if(loginUser.getText().equals(user) && String.valueOf(loginPassword.getPassword()).equals(passw)) {
         	            	if(String.valueOf(loginRoles.getSelectedItem()).equals("Terminal")) {
-        	            		POS pos = new POS(empid);
+        	            		POS pos = new POS(empid, type);
         	    				pos.frame.setVisible(true);
         	    				frame.dispose();
         	            	}else if (String.valueOf(loginRoles.getSelectedItem()).equals("Inventory")) {
-        	            		Inventory inv = new Inventory(empid);
+        	            		Inventory inv = new Inventory(empid,type);
         	    				inv.frame.setVisible(true);
         	    				frame.dispose();
         	            	}else if (String.valueOf(loginRoles.getSelectedItem()).equals("Admin")) {
         	            		if(type.equals("admin")) {
-        	            			Admin window = new Admin(empid);
+        	            			Admin window = new Admin(empid, type);
         	    					window.frame.setVisible(true);
         	    					frame.dispose();
         	            		}else {

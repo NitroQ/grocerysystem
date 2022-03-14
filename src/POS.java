@@ -28,6 +28,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 
 public class POS extends SQLConnect{
@@ -39,8 +41,7 @@ public class POS extends SQLConnect{
     private JLabel lbl_Skugoinput, lbl_Qt, GoShopperAdmin_Logo,lbl_Discount_2,lbl_Discount_1,lbl_Discount_3,GoShopper_BG,lbl_Discount_4,txt_change, lbl_Discount_6, lbl_Discount_7,lbl_Discount_8,lbl_Discount_9,txtView_Subtotal,txtView_Discount,txtView_VAT, txtView_GrandTotal,viewitem,viewprice;
 	private JComboBox jcb_GoDiscount, jcb_PaymentMethod;
     JPanel panel;
-    private String emp_id; 
-    private Double grandtotal, change, cash;
+    private String emp_id, type; 
 	private  String[] columns = {"SKU", "Item", "Quantity", "Price"};
     private Object[][] data = {};
      @SuppressWarnings("serial")
@@ -51,12 +52,14 @@ public class POS extends SQLConnect{
            }
      };
 
-	public POS(String emp_id) {
+	public POS(String emp_id, String type) {
 		this.emp_id = emp_id;
+		this.type = type;
 		initialize();
 	}
 	
 	public void updateTotal() {
+		 Double grandtotal;
 		Double subtotal= 0.00, tax;
 		for (int count = 0; count < model.getRowCount(); count++){
 			 subtotal +=  Double.parseDouble(model.getValueAt(count, 3).toString());
@@ -137,6 +140,27 @@ public class POS extends SQLConnect{
         PaymentDetails.add(txtView_VAT);
         
         txtView_GrandTotal = new JLabel("");
+        txtView_GrandTotal.addPropertyChangeListener(new PropertyChangeListener() {
+        	public void propertyChange(PropertyChangeEvent evt) {
+        		if(!txtView_GrandTotal.getText().equals("")) {
+        			Double grandtotal = Double.parseDouble(txtView_GrandTotal.getText());
+	       			if(jcb_PaymentMethod.getSelectedItem().equals("PWD")) {
+	       				double pwd_dis = grandtotal * 0.20;
+	       				grandtotal -= pwd_dis;
+	       				txtView_GrandTotal.setText(String.valueOf(grandtotal));
+	       				txtView_Discount.setText(String.valueOf(pwd_dis));
+	       				
+	       			}else if(jcb_PaymentMethod.getSelectedItem().equals("Senior")) {
+	       				double sen_dis = grandtotal * 0.20;
+	       				grandtotal -= sen_dis;
+	       				txtView_GrandTotal.setText(String.valueOf(grandtotal));
+	       				txtView_Discount.setText(String.valueOf(sen_dis));
+	       			}else if(jcb_PaymentMethod.getSelectedItem().equals("Member")) {
+	       				
+	       			}
+	       		}
+        	}
+        });
         txtView_GrandTotal.setHorizontalAlignment(SwingConstants.RIGHT);
         txtView_GrandTotal.setForeground(Color.WHITE);
         txtView_GrandTotal.setFont(new Font("Segoe UI Variable", Font.PLAIN, 20));
@@ -189,7 +213,7 @@ public class POS extends SQLConnect{
     		             ps.setString(1, emp_id);
     		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
     		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("GoDiscount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
-    		             ps.setString(4, grandtotal.toString());
+    		             ps.setString(4, txtView_GrandTotal.getText().toString());
     		             rs = ps.executeQuery();
     		             while(rs.next()) {
     		            	 sale_id = rs.getString("identity");
@@ -339,8 +363,8 @@ public class POS extends SQLConnect{
         	@Override
         	public void keyReleased(KeyEvent e) {
         		if(!txt_Cash.getText().equals("")) {
-        			cash = Double.parseDouble(txt_Cash.getText());
-            		change = cash - grandtotal; 
+        			Double cash = Double.parseDouble(txt_Cash.getText());
+            		Double change = cash - Double.parseDouble(txtView_GrandTotal.getText());
             		txt_change.setText(String.format("%.2f", change));	
         		}
         	}
@@ -373,9 +397,10 @@ public class POS extends SQLConnect{
         frame.getContentPane().add(lbl_Qt);
         
         JButton admin_btn = new JButton("Admin");
+        admin_btn.setVisible(type.equals("admin")? true : false);
         admin_btn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		Admin window = new Admin(emp_id);
+        		Admin window = new Admin(emp_id, type);
 				window.frame.setVisible(true);
 				frame.dispose();
         	}
@@ -389,7 +414,7 @@ public class POS extends SQLConnect{
         JButton inv_btn = new JButton("Inventory");
         inv_btn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		Inventory inv = new Inventory(emp_id);
+        		Inventory inv = new Inventory(emp_id, type);
 				inv.frame.setVisible(true);
 				frame.dispose();
         	}
