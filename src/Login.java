@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -20,6 +21,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Login extends SQLConnect {
 
@@ -55,82 +59,78 @@ public class Login extends SQLConnect {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+
+	 
 	private void initialize() {
 		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = new Dimension (1020, 700);
         
-        frame = new JFrame("GoShopper Login");
+        frame = new JFrame("GoShopper Inventory");
         frame.setResizable(false);
         frame.getContentPane().setBackground(Color.WHITE);
-        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,frameSize.width, frameSize.height);
-                            
+        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,1003, 661);
+        frame.setLocationRelativeTo(null);
+        
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+        
         Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
         frame.setIconImage(icon);
-        frame.addWindowListener(new WindowAdapter() {
-              public void windowClosing(WindowEvent e) {
-                int confirmed = JOptionPane.showConfirmDialog(null, 
-                    "Are you sure you want to exit the program?", "Exit Program Message Box",
-                    JOptionPane.YES_NO_OPTION);
-
-                if (confirmed == JOptionPane.YES_OPTION) {
-                    frame.dispose();
-                }
-                else {
-                    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                }
-              }
-            });
         frame.getContentPane().setLayout(null);
         
-        JLabel BGLogin = new JLabel("");
-        Image loginBG = new ImageIcon(this.getClass().getResource("/bglogin.png")).getImage();
-        BGLogin.setIcon(new ImageIcon (loginBG));
-        BGLogin.setBounds(558, 0, 446, 661);
-        frame.getContentPane().add(BGLogin);
-        
-        JLabel logo = new JLabel("");
-        Image goshopperLogo = new ImageIcon (this.getClass().getResource("/GoShopper.png")).getImage();
-        logo.setIcon(new ImageIcon(goshopperLogo));
-        logo.setBounds(35, 33, 308, 154);
-        frame.getContentPane().add(logo);
-        
-        JLabel loginText = new JLabel("LOGIN");
-        loginText.setFont(new Font("Segoe UI Black", Font.BOLD, 30));
-        loginText.setBounds(35, 173, 122, 60);
-        frame.getContentPane().add(loginText);
+        JLabel lblX = new JLabel("x");
+        lblX.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+                int confirmed = JOptionPane.showConfirmDialog(null, 
+                "Are you sure you want to exit the program?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
+
+                if (confirmed == JOptionPane.YES_OPTION) {
+                	System.exit(0);
+                } else {
+                	frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+        	}
+        });
+        lblX.setForeground(new Color(255, 255, 255));
+        lblX.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblX.setFont(new Font("Segoe UI Black", Font.PLAIN, 24));
+        lblX.setBounds(735, 15, 250, 29);
+        frame.getContentPane().add(lblX);
         
         JLabel lblRole = new JLabel("Choose your role");
         lblRole.setFont(new Font("Segoe UI Variable", Font.ITALIC, 24));
-        lblRole.setBounds(35, 258, 250, 29);
+        lblRole.setBounds(74, 206, 250, 29);
         frame.getContentPane().add(lblRole);
         
         JComboBox loginRoles = new JComboBox();
         loginRoles.setBackground(UIManager.getColor("Button.light"));
-        loginRoles.setFont(new Font("Roboto", Font.PLAIN, 24));
+        loginRoles.setFont(new Font("Segoe UI Variable", Font.PLAIN, 20));
         loginRoles.setModel(new DefaultComboBoxModel(new String[] {"Terminal", "Inventory", "Admin"}));
-        loginRoles.setBounds(35, 308, 278, 38);
+        loginRoles.setBounds(74, 255, 349, 45);
         frame.getContentPane().add(loginRoles);
         
         JLabel lblUsername = new JLabel("Username");
-        lblUsername.setFont(new Font("Segoe UI Variable", Font.PLAIN, 24));
-        lblUsername.setBounds(35, 368, 155, 29);
+        lblUsername.setFont(new Font("Segoe UI Variable", Font.ITALIC, 24));
+        lblUsername.setBounds(74, 319, 155, 29);
         frame.getContentPane().add(lblUsername);
         
         loginUser = new JTextField();
-        loginUser.setFont(new Font("Roboto", Font.PLAIN, 24));
-        loginUser.setBackground(UIManager.getColor("Button.light"));
-        loginUser.setBounds(35, 408, 278, 38);
+        loginUser.setFont(new Font("Segoe UI Variable", Font.PLAIN, 20));
+        loginUser.setBackground(new Color(245, 245, 245));
+        loginUser.setBounds(74, 358, 349, 45);
         frame.getContentPane().add(loginUser);
         loginUser.setColumns(10);
         
         JLabel lblPassword = new JLabel("Password");
-        lblPassword.setFont(new Font("Segoe UI Variable", Font.PLAIN, 24));
-        lblPassword.setBounds(35, 472, 155, 29);
+        lblPassword.setFont(new Font("Segoe UI Variable", Font.ITALIC, 24));
+        lblPassword.setBounds(74, 419, 155, 29);
         frame.getContentPane().add(lblPassword);
         
         loginPassword = new JPasswordField();
-        loginPassword.setBackground(UIManager.getColor("Button.light"));
-        loginPassword.setBounds(35, 512, 278, 38);
+        loginPassword.setFont(new Font("Segoe UI Variable", Font.PLAIN, 20));
+        loginPassword.setBackground(new Color(245, 245, 245));
+        loginPassword.setBounds(74, 458, 349, 45);
         frame.getContentPane().add(loginPassword);
         
         JButton login_btn = new JButton("Login");
@@ -185,13 +185,23 @@ public class Login extends SQLConnect {
         	}
         });
         login_btn.setForeground(Color.WHITE);
-        login_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+        login_btn.setFont(new Font("Segoe UI Variable", Font.BOLD, 15));
         login_btn.setBackground(new Color(220, 20, 60));
-        login_btn.setBounds(35, 574, 114, 43);
+        login_btn.setBounds(74, 526, 114, 43);
         frame.getContentPane().add(login_btn);
         
+        JLabel lblNewLabel_1 = new JLabel("");
+        lblNewLabel_1.setIcon(new ImageIcon(this.getClass().getResource("Login_Logo.png")));
+        lblNewLabel_1.setBounds(0, -21, 1006, 663);
+        frame.getContentPane().add(lblNewLabel_1);
         
-       
+        JLabel lblNewLabel = new JLabel("");
+        lblNewLabel.setIcon(new ImageIcon(this.getClass().getResource("Login_SidePanel.png")));
+        lblNewLabel.setBounds(0, -22, 1006, 685);
+        frame.getContentPane().add(lblNewLabel);
+                
+		
+
         
         
         

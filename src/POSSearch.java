@@ -16,7 +16,10 @@ import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Image;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class POSSearch extends SQLConnect {
 
@@ -60,13 +63,19 @@ public class POSSearch extends SQLConnect {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		updateTable();
-		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = new Dimension (647, 460);
+		updateTable();
         
-        frame = new JFrame("GoShopper Inventory");
+        frame = new JFrame("GoShopper POS Search");
+        frame.setResizable(false);
         frame.getContentPane().setBackground(Color.WHITE);
-        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,frameSize.width, frameSize.height);
+        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,634, 419);
+        frame.setLocationRelativeTo(null);
+        
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
+        
         Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
         frame.setIconImage(icon);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -81,6 +90,12 @@ public class POSSearch extends SQLConnect {
         frame.getContentPane().add(jspItem);
         
         JButton btnBack = new JButton("Back");
+        btnBack.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		frame.dispose();
+        	}
+        });
         btnBack.setBackground(new Color(0, 139, 139));
         btnBack.setForeground(new Color(255, 255, 255));
         btnBack.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));

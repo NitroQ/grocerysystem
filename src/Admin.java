@@ -1,9 +1,14 @@
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -41,13 +46,21 @@ public class Admin {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = new Dimension (1020, 700);
+        
+        frame = new JFrame("GoShopper Admin");
+        frame.setResizable(false);
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 1020, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,1003, 661);
+        frame.setLocationRelativeTo(null);
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+        Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+        frame.setIconImage(icon);
 		frame.getContentPane().setLayout(null);
 		
-		JButton btnNewButton = new JButton("HRIS Records");
+		JButton btnNewButton = new JButton("Employee Records");
 		btnNewButton.setForeground(Color.WHITE);
 		btnNewButton.setBackground(new Color(204, 102, 102));
 		btnNewButton.setFont(new Font("Roboto", Font.BOLD, 14));
@@ -63,9 +76,16 @@ public class Admin {
 		JButton LogOut = new JButton("Log-Out");
 		LogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Login log_in = new Login();
-				log_in.frame.setVisible(true);
-				frame.dispose();
+				int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Are you sure you want to Log-Out of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
+
+				if (confirmed == JOptionPane.YES_OPTION) {
+					Login log_in = new Login();
+					log_in.frame.setVisible(true);
+					frame.dispose();
+				} else {
+					frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				}
 			}
 		});
 		LogOut.setForeground(Color.WHITE);
@@ -103,12 +123,12 @@ public class Admin {
 		pos_btn.setBounds(746, 34, 109, 35);
 		frame.getContentPane().add(pos_btn);
 		
-		JLabel lblNewLabel_1_1 = new JLabel("HRIS Records");
+		JLabel lblNewLabel_1_1 = new JLabel("Employee Records");
 		lblNewLabel_1_1.setForeground(Color.BLACK);
 		lblNewLabel_1_1.setFont(new Font("Segoe UI Variable", Font.BOLD, 39));
-		lblNewLabel_1_1.setBounds(37, 533, 253, 52);
+		lblNewLabel_1_1.setBounds(37, 533, 352, 52);
 		frame.getContentPane().add(lblNewLabel_1_1);
-		btnNewButton.setBounds(37, 595, 160, 35);
+		btnNewButton.setBounds(37, 595, 181, 35);
 		frame.getContentPane().add(btnNewButton);
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Sales Records");

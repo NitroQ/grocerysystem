@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -111,25 +112,14 @@ public class Inventory extends SQLConnect{
 		updateTable();
 		
 		frame = new JFrame("GoShopper Inventory");
-		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,frameSize.width, frameSize.height);
 		frame.setResizable(false);
+		frame.getContentPane().setBackground(Color.WHITE);
+		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,1003, 661);
+        frame.setLocationRelativeTo(null);
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
 		frame.setIconImage(icon);
-		frame.addWindowListener(new WindowAdapter() {
-			  public void windowClosing(WindowEvent e) {
-			    int confirmed = JOptionPane.showConfirmDialog(null, 
-			        "Are you sure you want to exit the program?", "Exit Program Message Box",
-			        JOptionPane.YES_NO_OPTION);
-
-			    if (confirmed == JOptionPane.YES_OPTION) {
-			    	frame.dispose();
-			    }
-			    else {
-			    	frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			    }
-			  }
-			});
 		frame.getContentPane().setLayout(null);
 		
 		JLabel Window_Name = new JLabel("Inventory Dashboard");
@@ -286,9 +276,16 @@ public class Inventory extends SQLConnect{
 		JButton logout_btn = new JButton("Logout");
 		logout_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Login log_in = new Login();
-				log_in.frame.setVisible(true);
-				frame.dispose();
+				int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Are you sure you want to Log-Out of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
+
+				if (confirmed == JOptionPane.YES_OPTION) {
+					Login log_in = new Login();
+					log_in.frame.setVisible(true);
+					frame.dispose();
+				} else {
+					frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				}
 			}
 		});
 		logout_btn.setForeground(new Color(255, 255, 255));
@@ -338,9 +335,14 @@ class InventoryAdd {
 		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frameSize = new Dimension (473, 367);
 		
-		frame = new JFrame("GoShopper Inventory");
-		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 568);
+		frame = new JFrame("GoShopper Inventory Add");
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(Color.WHITE);
+        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 525);
+        frame.setLocationRelativeTo(null);
+        
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
 		frame.setIconImage(icon);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -503,10 +505,15 @@ class InventoryEdit {
 		Dimension frameSize = new Dimension (473, 367);
 		find();
 		
-		frame = new JFrame("GoShopper Inventory");
-		frame.getContentPane().setBackground(new Color(255, 255, 255));
-		frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 568);
-		Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+		frame = new JFrame("GoShopper Inventory Edit");
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(Color.WHITE);
+        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,473, 525);
+        frame.setLocationRelativeTo(null);
+        
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+    	Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
 		frame.setIconImage(icon);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);

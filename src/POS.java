@@ -1,5 +1,4 @@
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,6 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -21,7 +21,6 @@ import javax.swing.JComboBox;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Image;
-
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -29,13 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+
 
 public class POS extends SQLConnect{
 
@@ -81,25 +74,15 @@ public class POS extends SQLConnect{
 		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = new Dimension (1020, 700);
         
-        frame = new JFrame("GoShopper Inventory");
+        frame = new JFrame("GoShopper POS");
+        frame.setResizable(false);
         frame.getContentPane().setBackground(Color.WHITE);
-        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,frameSize.width, frameSize.height);
+        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,1003, 661);
+        frame.setLocationRelativeTo(null);   
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
         Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
         frame.setIconImage(icon);
-        frame.addWindowListener(new WindowAdapter() {
-              public void windowClosing(WindowEvent e) {
-                int confirmed = JOptionPane.showConfirmDialog(null, 
-                    "Are you sure you want to exit the program?", "Exit Program Message Box",
-                    JOptionPane.YES_NO_OPTION);
-
-                if (confirmed == JOptionPane.YES_OPTION) {
-                    frame.dispose();
-                }
-                else {
-                    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                }
-              }
-            });
         frame.getContentPane().setLayout(null);
         
         JPanel PaymentDetails = new JPanel();
@@ -420,9 +403,17 @@ public class POS extends SQLConnect{
         JButton logout_btn = new JButton("Logout");
         logout_btn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		Login log_in = new Login();
-				log_in.frame.setVisible(true);
-				frame.dispose();
+              
+                int confirmed = JOptionPane.showConfirmDialog(null, 
+				"Are you sure you want to Log-Out of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
+
+				if (confirmed == JOptionPane.YES_OPTION) {
+					Login log_in = new Login();
+					log_in.frame.setVisible(true);
+					frame.dispose();
+				} else {
+					frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				}
         	}
         });
         logout_btn.setForeground(Color.WHITE);

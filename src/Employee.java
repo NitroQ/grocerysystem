@@ -1,20 +1,19 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,7 +26,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Component;
-import javax.swing.table.TableModel;
+import java.awt.Dimension;
 
 
 
@@ -36,7 +35,6 @@ public class Employee extends SQLConnect {
 	JFrame frame;
 	private String emp_id;
 	private JTable table_EmployeeList;
-	private JScrollPane scrollPane;
     private  String[] columns = {"Employee Number", "Employee Name", "Role"};
     private Object[][] data = {};
      @SuppressWarnings("serial")
@@ -66,9 +64,11 @@ public class Employee extends SQLConnect {
  		 JOptionPane.showMessageDialog(null, ex );
       }
 	}
+
 	/**
 	 * Create the application.
 	 */
+
 	public Employee(String emp_id) {
 		this.emp_id = emp_id;
 		initialize();
@@ -77,17 +77,30 @@ public class Employee extends SQLConnect {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+
+	private void initialize() {	
+		Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension frameSize = new Dimension (1020, 700);
 		updateTable();
-		frame = new JFrame();
-		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 1020, 700);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+        frame = new JFrame("GoShopper Admin");
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(Color.WHITE);
+        frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,1003, 661);
+        frame.setLocationRelativeTo(null);
+        
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+        
+        Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+        frame.setIconImage(icon);
 		frame.getContentPane().setLayout(null);
 		
-		JButton LogOut = new JButton("Log-Out");
+
+		JButton LogOut = new JButton("Back");
 		LogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();			
 			}
 		});
 		LogOut.setForeground(Color.WHITE);
@@ -266,10 +279,21 @@ public class Employee extends SQLConnect {
 		 */
 		private void initialize() {
 			find();
-			frame = new JFrame();
+				
+			Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+			Dimension frameSize = new Dimension (718, 700);
+			
+			frame = new JFrame("GoShopper Employee Edit");
+			frame.setResizable(false);
 			frame.getContentPane().setBackground(Color.WHITE);
-			frame.setBounds(100, 100, 718, 772);
-			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,897, 508);
+			frame.setLocationRelativeTo(null);
+			
+	        frame.setUndecorated(true);
+	        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
+			
+			Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+			frame.setIconImage(icon);
 			frame.getContentPane().setLayout(null);
 			
 			JLabel EditEmployeeText = new JLabel("Edit Employee");
@@ -281,41 +305,41 @@ public class Employee extends SQLConnect {
 			JLabel lblEditFName = new JLabel("First Name");
 			lblEditFName.setForeground(Color.BLACK);
 			lblEditFName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-			lblEditFName.setBounds(28, 145, 294, 21);
+			lblEditFName.setBounds(28, 130, 294, 21);
 			frame.getContentPane().add(lblEditFName);
 			
 			txtEditFName = new JTextField(Fname);
-			txtEditFName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+			txtEditFName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditFName.setBackground(new Color(245, 245, 245));
-			txtEditFName.setBounds(28, 177, 294, 29);
+			txtEditFName.setBounds(28, 162, 273, 35);
 			frame.getContentPane().add(txtEditFName);
 			txtEditFName.setColumns(10);
 			
 			JLabel lblEditLName = new JLabel("Last Name");
 			lblEditLName.setForeground(Color.BLACK);
 			lblEditLName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-			lblEditLName.setBounds(363, 145, 294, 21);
+			lblEditLName.setBounds(311, 130, 294, 21);
 			frame.getContentPane().add(lblEditLName);
 			
 			txtEditLName = new JTextField(Lname);
-			txtEditLName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+			txtEditLName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditLName.setColumns(10);
 			txtEditLName.setBackground(new Color(245, 245, 245));
-			txtEditLName.setBounds(363, 177, 294, 29);
+			txtEditLName.setBounds(311, 162, 273, 35);
 			frame.getContentPane().add(txtEditLName);
 			
 			JLabel lblEditGender = new JLabel("Gender");
 			lblEditGender.setForeground(Color.BLACK);
 			lblEditGender.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-			lblEditGender.setBounds(28, 444, 325, 21);
+			lblEditGender.setBounds(396, 208, 325, 21);
 			frame.getContentPane().add(lblEditGender);
 			
 			cmbEditGender = new JComboBox();
 			cmbEditGender.setModel(new DefaultComboBoxModel(new String[] {"Female", "Male"}));
 			cmbEditGender.setSelectedItem(Gender.equals("F") ? "Female" : "Male");
-			cmbEditGender.setFont(new Font("Dialog", Font.PLAIN, 12));
+			cmbEditGender.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 			cmbEditGender.setBackground(new Color(245, 245, 245));
-			cmbEditGender.setBounds(28, 482, 294, 29);
+			cmbEditGender.setBounds(396, 239, 188, 35);
 			frame.getContentPane().add(cmbEditGender);
 			
 			JButton btnEdit = new JButton("Save");
@@ -359,7 +383,7 @@ public class Employee extends SQLConnect {
 			btnEdit.setForeground(Color.WHITE);
 			btnEdit.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
 			btnEdit.setBackground(new Color(220, 20, 60));
-			btnEdit.setBounds(28, 653, 78, 35);
+			btnEdit.setBounds(28, 443, 78, 35);
 			frame.getContentPane().add(btnEdit);
 			
 			JButton btnCancel = new JButton("Cancel");
@@ -371,91 +395,97 @@ public class Employee extends SQLConnect {
 			btnCancel.setForeground(Color.WHITE);
 			btnCancel.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
 			btnCancel.setBackground(new Color(0, 139, 139));
-			btnCancel.setBounds(116, 653, 120, 35);
+			btnCancel.setBounds(117, 443, 120, 35);
 			frame.getContentPane().add(btnCancel);
 			Image adminlogo = new ImageIcon(this.getClass().getResource("/LogoAdminSub.png")).getImage();
 			
 			JLabel lblEditAddress = new JLabel("Address");
-			lblEditAddress.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditAddress.setBounds(28, 217, 294, 21);
+			lblEditAddress.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditAddress.setBounds(28, 207, 294, 21);
 			frame.getContentPane().add(lblEditAddress);
 			
 			txtEditAddress = new JTextField(Address);
+			txtEditAddress.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditAddress.setBackground(new Color(245, 245, 245));
-			txtEditAddress.setBounds(28, 249, 629, 29);
+			txtEditAddress.setBounds(28, 239, 358, 35);
 			frame.getContentPane().add(txtEditAddress);
 			txtEditAddress.setColumns(10);
 			
 			JLabel lblEditUsername = new JLabel("Username");
-			lblEditUsername.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditUsername.setBounds(28, 301, 294, 21);
+			lblEditUsername.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditUsername.setBounds(28, 284, 294, 21);
 			frame.getContentPane().add(lblEditUsername);
 			
 			txtEditUsername = new JTextField(Username);
+			txtEditUsername.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditUsername.setBackground(new Color(245, 245, 245));
-			txtEditUsername.setBounds(28, 333, 294, 29);
+			txtEditUsername.setBounds(28, 316, 273, 35);
 			frame.getContentPane().add(txtEditUsername);
 			txtEditUsername.setColumns(10);
 			
-			JLabel GoShopperAdmin_Logo = new JLabel("New label");
-			GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));
-			GoShopperAdmin_Logo.setBounds(-11, 0, 333, 393);
-			frame.getContentPane().add(GoShopperAdmin_Logo);
-			
 			JLabel lblEditEmail = new JLabel("Email");
-			lblEditEmail.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditEmail.setBounds(363, 301, 294, 21);
+			lblEditEmail.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditEmail.setBounds(594, 130, 294, 21);
 			frame.getContentPane().add(lblEditEmail);
 			
 			txtEditEmail = new JTextField(Email);
+			txtEditEmail.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditEmail.setBackground(new Color(245, 245, 245));
-			txtEditEmail.setBounds(363, 333, 294, 29);
+			txtEditEmail.setBounds(594, 162, 273, 35);
 			frame.getContentPane().add(txtEditEmail);
 			txtEditEmail.setColumns(10);
 			
 			JLabel lblEditPassword = new JLabel("Password");
-			lblEditPassword.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditPassword.setBounds(27, 373, 295, 21);
+			lblEditPassword.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditPassword.setBounds(311, 285, 295, 21);
 			frame.getContentPane().add(lblEditPassword);
 			
 			fieldEditPassword = new JPasswordField();
+			fieldEditPassword.setFont(new Font("Segoe UI Variable", Font.BOLD, 15));
 			fieldEditPassword.setBackground(new Color(245, 245, 245));
-			fieldEditPassword.setBounds(27, 404, 295, 29);
+			fieldEditPassword.setBounds(311, 316, 273, 35);
 			frame.getContentPane().add(fieldEditPassword);
 			
 			JLabel lblEditRole = new JLabel("Role");
-			lblEditRole.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditRole.setBounds(363, 373, 294, 21);
+			lblEditRole.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditRole.setBounds(594, 286, 294, 21);
 			frame.getContentPane().add(lblEditRole);
 			
 			cmbEditRole = new JComboBox();
-			cmbEditRole.setFont(new Font("Dialog", Font.PLAIN, 12));
+			cmbEditRole.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 			cmbEditRole.setModel(new DefaultComboBoxModel(new String[] {"Merchandiser", "Cashier", "Manager"}));
 			cmbEditRole.setSelectedItem(Role.equals("Merch") ? "Merchandiser" : Role );
-			cmbEditRole.setBounds(363, 403, 294, 29);
+			cmbEditRole.setBounds(594, 316, 273, 35);
 			frame.getContentPane().add(cmbEditRole);
 			
 			JLabel lblEditAge = new JLabel("Age");
-			lblEditAge.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditAge.setBounds(363, 444, 294, 21);
+			lblEditAge.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditAge.setBounds(594, 208, 294, 21);
 			frame.getContentPane().add(lblEditAge);
 			
 			txtEditAge = new JTextField(Age);
+			txtEditAge.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditAge.setBackground(new Color(245, 245, 245));
-			txtEditAge.setBounds(363, 483, 294, 29);
+			txtEditAge.setBounds(594, 238, 273, 35);
 			frame.getContentPane().add(txtEditAge);
 			txtEditAge.setColumns(10);
 			
 			JLabel lblEditUser = new JLabel("User Type");
-			lblEditUser.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEditUser.setBounds(28, 522, 295, 21);
+			lblEditUser.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditUser.setBounds(27, 369, 295, 21);
 			frame.getContentPane().add(lblEditUser);
 			
 			chckEditUser = new JCheckBox("Admin");
+			chckEditUser.setBackground(new Color(255, 255, 255));
 			chckEditUser.setSelected(user_type);
-			chckEditUser.setFont(new Font("Dialog", Font.PLAIN, 12));
-			chckEditUser.setBounds(28, 550, 97, 31);
+			chckEditUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+			chckEditUser.setBounds(27, 396, 97, 31);
 			frame.getContentPane().add(chckEditUser);
+
+			JLabel GoShopperAdmin_Logo = new JLabel("New label");
+			GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));
+			GoShopperAdmin_Logo.setBounds(-11, 0, 333, 393);
+			frame.getContentPane().add(GoShopperAdmin_Logo);
 		}
 	}
 
@@ -476,67 +506,66 @@ class EmployeeAdd {
 		 * Initialize the contents of the frame.
 		 */
 		private void initialize() {
-			frame = new JFrame();
+			Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+			Dimension frameSize = new Dimension (718, 700);
+			
+			frame = new JFrame("GoShopper Employee Edit");
+			frame.setResizable(false);
 			frame.getContentPane().setBackground(Color.WHITE);
-			frame.setBounds(100, 100, 718, 772);
-			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,897, 508);
+			frame.setLocationRelativeTo(null);
+	        frame.setUndecorated(true);
+	        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.GRAY));
+			Image icon = new ImageIcon(this.getClass().getResource("/Logo.png")).getImage();
+			frame.setIconImage(icon);		
 			frame.getContentPane().setLayout(null);
+
+
+			JLabel EditEmployeeText = new JLabel("Edit Employee");
+			EditEmployeeText.setForeground(Color.BLACK);
+			EditEmployeeText.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
+			EditEmployeeText.setBounds(28, 85, 325, 35);
+			frame.getContentPane().add(EditEmployeeText);
 			
-			txtUsername = new JTextField();
-			txtUsername.setBackground(new Color(245, 245, 245));
-			txtUsername.setBounds(28, 337, 294, 31);
-			frame.getContentPane().add(txtUsername);
-			txtUsername.setColumns(10);
-			
-			JLabel lblUsername = new JLabel("Username");
-			lblUsername.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblUsername.setBounds(28, 305, 293, 21);
-			frame.getContentPane().add(lblUsername);
-			
-			JLabel AddEmployeeText = new JLabel("Add Employee");
-			AddEmployeeText.setForeground(Color.BLACK);
-			AddEmployeeText.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
-			AddEmployeeText.setBounds(28, 85, 325, 35);
-			frame.getContentPane().add(AddEmployeeText);
-			
-			JLabel lblFName = new JLabel("First Name");
-			lblFName.setForeground(Color.BLACK);
-			lblFName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-			lblFName.setBounds(28, 149, 294, 21);
-			frame.getContentPane().add(lblFName);
+			JLabel lblEditFName = new JLabel("First Name");
+			lblEditFName.setForeground(Color.BLACK);
+			lblEditFName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditFName.setBounds(28, 130, 294, 21);
+			frame.getContentPane().add(lblEditFName);
 			
 			txtFName = new JTextField();
-			txtFName.setFont(new Font("Roboto", Font.PLAIN, 12));
+			txtFName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtFName.setBackground(new Color(245, 245, 245));
-			txtFName.setBounds(28, 181, 294, 29);
+			txtFName.setBounds(28, 162, 273, 35);
 			frame.getContentPane().add(txtFName);
 			txtFName.setColumns(10);
 			
-			JLabel lblLName = new JLabel("Last Name");
-			lblLName.setForeground(Color.BLACK);
-			lblLName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-			lblLName.setBounds(363, 149, 325, 21);
-			frame.getContentPane().add(lblLName);
+			JLabel lblEditLName = new JLabel("Last Name");
+			lblEditLName.setForeground(Color.BLACK);
+			lblEditLName.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditLName.setBounds(311, 130, 294, 21);
+			frame.getContentPane().add(lblEditLName);
 			
 			txtLName = new JTextField();
-			txtLName.setFont(new Font("Roboto", Font.PLAIN, 12));
+			txtLName.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtLName.setColumns(10);
 			txtLName.setBackground(new Color(245, 245, 245));
-			txtLName.setBounds(363, 181, 294, 29);
+			txtLName.setBounds(311, 162, 273, 35);
 			frame.getContentPane().add(txtLName);
 			
-			JLabel lblRole = new JLabel("Role");
-			lblRole.setForeground(Color.BLACK);
-			lblRole.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-			lblRole.setBounds(363, 379, 293, 21);
-			frame.getContentPane().add(lblRole);
+			JLabel lblEditGender = new JLabel("Gender");
+			lblEditGender.setForeground(Color.BLACK);
+			lblEditGender.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditGender.setBounds(396, 208, 325, 21);
+			frame.getContentPane().add(lblEditGender);
 			
-			cmbPosition = new JComboBox();
-			cmbPosition.setFont(new Font("Dialog", Font.PLAIN, 12));
-			cmbPosition.setModel(new DefaultComboBoxModel(new String[] {"Merchandiser", "Cashier", "Manager"}));
-			cmbPosition.setBackground(new Color(245, 245, 245));
-			cmbPosition.setBounds(363, 411, 294, 31);
-			frame.getContentPane().add(cmbPosition);
+			cmbGender = new JComboBox();
+			cmbGender.setModel(new DefaultComboBoxModel(new String[] {"Female", "Male"}));
+			cmbGender.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+			cmbGender.setBackground(new Color(245, 245, 245));
+			cmbGender.setBounds(396, 239, 188, 35);
+			frame.getContentPane().add(cmbGender);
+			
 			
 			JButton btnEdit = new JButton("Save");
 			btnEdit.addActionListener(new ActionListener() {
@@ -584,9 +613,9 @@ class EmployeeAdd {
 				}
 			});
 			btnEdit.setForeground(Color.WHITE);
-			btnEdit.setFont(new Font("Roboto", Font.BOLD, 14));
-			btnEdit.setBackground(new Color(204, 102, 102));
-			btnEdit.setBounds(28, 653, 78, 35);
+			btnEdit.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+			btnEdit.setBackground(new Color(220, 20, 60));
+			btnEdit.setBounds(28, 443, 78, 35);
 			frame.getContentPane().add(btnEdit);
 			
 			JButton btnCancel = new JButton("Cancel");
@@ -596,79 +625,96 @@ class EmployeeAdd {
 				}
 			});
 			btnCancel.setForeground(Color.WHITE);
-			btnCancel.setFont(new Font("Roboto", Font.BOLD, 14));
-			btnCancel.setBackground(new Color(47, 79, 79));
-			btnCancel.setBounds(116, 653, 120, 35);
+			btnCancel.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+			btnCancel.setBackground(new Color(0, 139, 139));
+			btnCancel.setBounds(117, 443, 120, 35);
 			frame.getContentPane().add(btnCancel);
 			Image adminlogo = new ImageIcon(this.getClass().getResource("/LogoAdminSub.png")).getImage();
 			
-			JLabel lblEmail = new JLabel("Email");
-			lblEmail.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblEmail.setBounds(363, 305, 294, 21);
-			frame.getContentPane().add(lblEmail);
-			
-			txtEmail = new JTextField();
-			txtEmail.setBackground(new Color(245, 245, 245));
-			txtEmail.setBounds(363, 337, 293, 31);
-			frame.getContentPane().add(txtEmail);
-			txtEmail.setColumns(10);
-			
-			JLabel lblGender = new JLabel("Gender");
-			lblGender.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblGender.setBounds(28, 453, 294, 21);
-			frame.getContentPane().add(lblGender);
-			
-			cmbGender = new JComboBox();
-			cmbGender.setFont(new Font("Dialog", Font.PLAIN, 12));
-			cmbGender.setModel(new DefaultComboBoxModel(new String[] {"Female", "Male"}));
-			cmbGender.setBounds(28, 485, 294, 31);
-			frame.getContentPane().add(cmbGender);
-			
-			JLabel lblPassword = new JLabel("Password");
-			lblPassword.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblPassword.setBounds(28, 379, 294, 21);
-			frame.getContentPane().add(lblPassword);
-			
-			fieldPassword = new JPasswordField();
-			fieldPassword.setBackground(new Color(245, 245, 245));
-			fieldPassword.setBounds(28, 413, 294, 29);
-			frame.getContentPane().add(fieldPassword);
-			
-			JLabel lblUser = new JLabel("User Type");
-			lblUser.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblUser.setBounds(28, 538, 293, 21);
-			frame.getContentPane().add(lblUser);
-			
-			chckUser = new JCheckBox("Admin");
-			chckUser.setFont(new Font("Dialog", Font.PLAIN, 12));
-			chckUser.setBounds(28, 569, 97, 31);
-			frame.getContentPane().add(chckUser);
-			
-			txtAge = new JTextField();
-			txtAge.setBackground(new Color(245, 245, 245));
-			txtAge.setBounds(363, 485, 294, 31);
-			frame.getContentPane().add(txtAge);
-			txtAge.setColumns(10);
-			
-			JLabel lblAge = new JLabel("Age");
-			lblAge.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblAge.setBounds(363, 453, 294, 21);
-			frame.getContentPane().add(lblAge);
-			
-			JLabel lblAddress = new JLabel("Address");
-			lblAddress.setFont(new Font("Dialog", Font.ITALIC, 16));
-			lblAddress.setBounds(28, 221, 295, 21);
-			frame.getContentPane().add(lblAddress);
+			JLabel lblEditAddress = new JLabel("Address");
+			lblEditAddress.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditAddress.setBounds(28, 207, 294, 21);
+			frame.getContentPane().add(lblEditAddress);
 			
 			txtAddress = new JTextField();
+			txtAddress.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtAddress.setBackground(new Color(245, 245, 245));
-			txtAddress.setBounds(28, 253, 626, 31);
+			txtAddress.setBounds(28, 239, 358, 35);
 			frame.getContentPane().add(txtAddress);
 			txtAddress.setColumns(10);
 			
-			JLabel GoShopperAdmin_Logo = new JLabel("");
+			JLabel lblEditUsername = new JLabel("Username");
+			lblEditUsername.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditUsername.setBounds(28, 284, 294, 21);
+			frame.getContentPane().add(lblEditUsername);
+			
+			txtUsername = new JTextField();
+			txtUsername.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
+			txtUsername.setBackground(new Color(245, 245, 245));
+			txtUsername.setBounds(28, 316, 273, 35);
+			frame.getContentPane().add(txtUsername);
+			txtUsername.setColumns(10);
+			
+			JLabel lblEditEmail = new JLabel("Email");
+			lblEditEmail.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditEmail.setBounds(594, 130, 294, 21);
+			frame.getContentPane().add(lblEditEmail);
+			
+			txtEmail = new JTextField();
+			txtEmail.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
+			txtEmail.setBackground(new Color(245, 245, 245));
+			txtEmail.setBounds(594, 162, 273, 35);
+			frame.getContentPane().add(txtEmail);
+			txtEmail.setColumns(10);
+			
+			JLabel lblEditPassword = new JLabel("Password");
+			lblEditPassword.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditPassword.setBounds(311, 285, 295, 21);
+			frame.getContentPane().add(lblEditPassword);
+			
+			fieldPassword = new JPasswordField();
+			fieldPassword.setFont(new Font("Segoe UI Variable", Font.BOLD, 15));
+			fieldPassword.setBackground(new Color(245, 245, 245));
+			fieldPassword.setBounds(311, 316, 273, 35);
+			frame.getContentPane().add(fieldPassword);
+			
+			JLabel lblEditRole = new JLabel("Role");
+			lblEditRole.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditRole.setBounds(594, 286, 294, 21);
+			frame.getContentPane().add(lblEditRole);
+			
+			cmbPosition = new JComboBox();
+			cmbPosition.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+			cmbPosition.setModel(new DefaultComboBoxModel(new String[] {"Merchandiser", "Cashier", "Manager"}));
+			cmbPosition.setBounds(594, 316, 273, 35);
+			frame.getContentPane().add(cmbPosition);
+			
+			JLabel lblEditAge = new JLabel("Age");
+			lblEditAge.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditAge.setBounds(594, 208, 294, 21);
+			frame.getContentPane().add(lblEditAge);
+			
+			txtAge = new JTextField();
+			txtAge.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
+			txtAge.setBackground(new Color(245, 245, 245));
+			txtAge.setBounds(594, 238, 273, 35);
+			frame.getContentPane().add(txtAge);
+			txtAge.setColumns(10);
+			
+			JLabel lblEditUser = new JLabel("User Type");
+			lblEditUser.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+			lblEditUser.setBounds(27, 369, 295, 21);
+			frame.getContentPane().add(lblEditUser);
+			
+			chckUser = new JCheckBox("Admin");
+			chckUser.setBackground(new Color(255, 255, 255));
+			chckUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+			chckUser.setBounds(27, 396, 97, 31);
+			frame.getContentPane().add(chckUser);
+			
+			JLabel GoShopperAdmin_Logo = new JLabel("New label");
 			GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));
-			GoShopperAdmin_Logo.setBounds(-17, 0, 333, 393);
+			GoShopperAdmin_Logo.setBounds(-11, 0, 333, 393);
 			frame.getContentPane().add(GoShopperAdmin_Logo);
 		}
 	}
