@@ -583,7 +583,7 @@ class EmployeeAdd {
 			             ps.setString(7, txtAge.getText());
 			 		    rs = ps.executeQuery();
 			 		    while(rs.next()) {
-			 		    	emp_id = rs.getString("emp_id");
+			 		    	emp_id = rs.getString("identity");
 			 		    }
 			 		    
 			 		    if(emp_id == null) {
