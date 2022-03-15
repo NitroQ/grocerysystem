@@ -110,7 +110,17 @@ public class Inventory extends SQLConnect{
 		    ps = con.prepareStatement("SELECT * FROM Logs WHERE loc = 'inventory'");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
-		    	String logging = rs.getString("family") + " " + rs.getString("remarks");  
+		    	String family = "";
+		    	if(rs.getString("family").equals("insert")) {
+		    		family = "Added";
+		    	}else if(rs.getString("family").equals("update")) {
+		    		family = "Changed";
+		    	}else if(rs.getString("family").equals("deleted")) {
+		    		family = "Removed";
+		    	}
+		    	
+		    	
+		    	String logging = family + " " + rs.getString("remarks");  
 		    	historymodel.addRow(new Object[] { logging, rs.getString("log_date") });
 		    }
       
@@ -618,7 +628,20 @@ class InventoryEdit {
 		             ps.setString(5, prod_id);
 		             ps.executeUpdate();
 		             
-		             String comment =    prodsku.getText() + " | " + prodname.getText() + " |q" +prodqty.getText() + "|c"+prodcost.getText() + "|p" + prodprice.getText();
+		             String comment = sku + "| ";
+		             if(!prodname.getText().equals(prod_name)) {
+		            	 comment += "name: " + prod_name + "-" + prodname.getText() + " ";
+		             }
+		             if(!prodqty.getText().equals(qty)) {
+		            	 comment += "qty: " + qty + "-" + prodqty.getText() + " ";
+		             }
+		             if(!prodcost.getText().equals(cost)) {
+		            	 comment += "cost: " + cost + "-" + prodcost.getText() + " ";
+		             }
+		             if(!prodprice.getText().equals(price)) {
+		            	 comment += "price: " + price + "-" + prodprice.getText() + " ";
+		             }
+		             
 		             SQLConnect.createlog(SQLConnect.LogType.UPDATE, emp_id, "inventory", comment);
 		             
 		             JOptionPane.showMessageDialog(null, "Updated");
