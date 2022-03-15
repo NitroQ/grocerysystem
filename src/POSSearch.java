@@ -117,6 +117,12 @@ public class POSSearch extends SQLConnect {
         frame.getContentPane().add(btnSearchSKU);
         
         JButton btnAdditem = new JButton("Add Item");
+        btnAdditem.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		
+        	}
+        });
         btnAdditem.setForeground(new Color(255, 255, 255));
         btnAdditem.setBackground(new Color(220, 20, 60));
         btnAdditem.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));

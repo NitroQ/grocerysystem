@@ -228,7 +228,8 @@ public class Employee extends SQLConnect {
 		GoShopperAdmin_Logo_1.setBounds(0, 0, 1006, 685);
 		frame.getContentPane().add(GoShopperAdmin_Logo_1);
 	}
-	class EmployeeEdit{
+
+class EmployeeEdit{
 
 		JFrame frame;
 	     private JTextField txtEditFName, txtEditLName,txtEditAddress,txtEditUsername, txtEditEmail,txtEditAge;
@@ -583,7 +584,7 @@ class EmployeeAdd {
 			             ps.setString(7, txtAge.getText());
 			 		    rs = ps.executeQuery();
 			 		    while(rs.next()) {
-			 		    	emp_id = rs.getString("emp_id");
+			 		    	emp_id = rs.getString("identity");
 			 		    }
 			 		    
 			 		    if(emp_id == null) {

@@ -23,7 +23,10 @@ import javax.swing.table.DefaultTableModel;
 
 public class Admin extends SQLConnect {
 
-	 JFrame frame;
+	JFrame frame;
+	 
+	private Double total_sales = 0.00;
+	private int total_trans = 0;
 	private String emp_id, type;
 	private JTable table_Sales;
     private  String[] columns = {"Purchase ID", "Purchase Sales", "Date"};
@@ -45,7 +48,14 @@ public class Admin extends SQLConnect {
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
 		    	model.addRow(new Object[]{rs.getString("sale_id"),rs.getString("total"), rs.getString("sale_date")});
+		    	
+		    	total_trans ++;
+		    	
+		    	if (!rs.getString("total").equals(null)) {
+		    		total_sales += Double.parseDouble(rs.getString("total"));
+		    	}
 		    }
+		    
            
 	 }catch(HeadlessException | SQLException ex){
 		 JOptionPane.showMessageDialog(null, ex );
@@ -195,8 +205,11 @@ public class Admin extends SQLConnect {
 		lblSales_2_1_1.setBounds(39, 92, 152, 39);
 		Profit_1.add(lblSales_2_1_1);
 		
-		JLabel lblNewLabel_3_3 = new JLabel("New label");
-		lblNewLabel_3_3.setBounds(27, 29, 184, 67);
+		JLabel lblNewLabel_3_3 = new JLabel(String.valueOf(total_trans));
+		lblNewLabel_3_3.setForeground(Color.WHITE);
+		lblNewLabel_3_3.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
+		lblNewLabel_3_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3_3.setBounds(21, 22, 184, 67);
 		Profit_1.add(lblNewLabel_3_3);
 		
 		JPanel Profit = new JPanel();
@@ -213,7 +226,10 @@ public class Admin extends SQLConnect {
 		Profit.add(lblSales_2);
 		
 		JLabel lblNewLabel_3_2 = new JLabel("New label");
-		lblNewLabel_3_2.setBounds(24, 31, 184, 67);
+		lblNewLabel_3_2.setForeground(Color.WHITE);
+		lblNewLabel_3_2.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
+		lblNewLabel_3_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3_2.setBounds(24, 42, 184, 67);
 		Profit.add(lblNewLabel_3_2);
 		
 		JPanel CostGoods = new JPanel();
@@ -237,7 +253,10 @@ public class Admin extends SQLConnect {
 		CostGoods.add(lblSales_1);
 		
 		JLabel lblNewLabel_3_1 = new JLabel("New label");
-		lblNewLabel_3_1.setBounds(28, 23, 184, 67);
+		lblNewLabel_3_1.setForeground(Color.WHITE);
+		lblNewLabel_3_1.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
+		lblNewLabel_3_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3_1.setBounds(24, 23, 184, 67);
 		CostGoods.add(lblNewLabel_3_1);
 		
 		JPanel NetSales = new JPanel();
@@ -260,10 +279,12 @@ public class Admin extends SQLConnect {
 		lblSales.setBounds(39, 119, 152, 39);
 		NetSales.add(lblSales);
 		
-		JLabel lblNewLabel_3 = new JLabel("New label");
+		JLabel lblNewLabel_3 = new JLabel(total_sales.toString());
+		lblNewLabel_3.setForeground(Color.WHITE);
+		lblNewLabel_3.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_3.setBounds(23, 24, 184, 67);
 		NetSales.add(lblNewLabel_3);
-		
 		
 		
 		JLabel GoShopperAdmin_Logo = new JLabel();

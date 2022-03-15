@@ -34,7 +34,7 @@ import java.beans.PropertyChangeEvent;
 
 public class POS extends SQLConnect{
 
-	 JFrame frame;
+	JFrame frame;
 	private JTable table;
     private JButton btn_Cancel,btn_Pay,btnNewButton_7, btnNewButton_8,btn_Print,btn_Void;
     private JTextField txt_Qt,skuinput,txt_Cash;
@@ -45,7 +45,7 @@ public class POS extends SQLConnect{
 	private  String[] columns = {"SKU", "Item", "Quantity", "Price"};
     private Object[][] data = {};
      @SuppressWarnings("serial")
-   private DefaultTableModel model = new DefaultTableModel(data, columns) {
+    private DefaultTableModel model = new DefaultTableModel(data, columns) {
          @Override
            public boolean isCellEditable(int row, int column) {
                return false;
