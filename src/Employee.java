@@ -171,7 +171,7 @@ public class Employee extends SQLConnect {
 		btnEdit.setBounds(725, 30, 80, 35);
 		panel.add(btnEdit);
 		
-		JButton btnDelete = new JButton("Delete");
+		JButton btnDelete = new JButton("Disable");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = table_EmployeeList.getSelectedRow();
@@ -179,11 +179,11 @@ public class Employee extends SQLConnect {
 					try{
 						String del = String.valueOf(table_EmployeeList.getModel().getValueAt(row, 0)); 
 					    con = DriverManager.getConnection(connectionUrl);
-					    ps = con.prepareStatement("DELETE FROM Users WHERE emp_id = ?; DELETE FROM Employee WHERE emp_id = ?");
+					    ps = con.prepareStatement("DELETE FROM Users WHERE emp_id = ?; UPDATE Employee SET empstatus = 'inactive' WHERE emp_id = ?");
 					    ps.setString(1, del);
 					    ps.setString(2, del);
 
-					    int n = JOptionPane.showConfirmDialog(null, "Confirm Delete? \n this will also delete User Login" , "WARNING", JOptionPane.YES_NO_OPTION);
+					    int n = JOptionPane.showConfirmDialog(null, "Confirm Disable? \n this will delete User Login" , "WARNING", JOptionPane.YES_NO_OPTION);
 
 					      if(n == JOptionPane.YES_OPTION) {
 					          ps.executeUpdate();
@@ -235,9 +235,9 @@ class EmployeeEdit{
 	     private JTextField txtEditFName, txtEditLName,txtEditAddress,txtEditUsername, txtEditEmail,txtEditAge;
 	     private JPasswordField fieldEditPassword;
 	     private JComboBox cmbEditGender, cmbEditRole;
-	     private  JCheckBox chckEditUser;
-	     private String id, Fname, Lname, Address, Username, Email, Age, Gender, Role, Password;
-	     private Boolean user_type;
+	     private  JCheckBox chckEditUser, chckActUser;
+	     private String id, Fname, Lname, Address, Username, Email, Age, Gender, Role, Password, empstatus;
+	     private Boolean user_type = false;
 
 
 		public EmployeeEdit(String id) {
@@ -259,16 +259,20 @@ class EmployeeEdit{
 				   Age = rs.getString("age");
 				   Gender = rs.getString("gender");
 				   Role = rs.getString("position");
+				   empstatus = rs.getString("empstatus");
 			    }
-			    con = DriverManager.getConnection(connectionUrl);
-			    ps = con.prepareStatement("SELECT * FROM Users WHERE emp_id = ?");
-			    ps.setString(1, id);
-			    rs = ps.executeQuery();
-			    while(rs.next()) {
-				   Username = rs.getString("username");
-				   Password = rs.getString("password");
-				   user_type = rs.getString("user_type").equals("admin") ? true : false;
-			    }
+			  if(empstatus.equals("active")) {
+				  con = DriverManager.getConnection(connectionUrl);
+				    ps = con.prepareStatement("SELECT * FROM Users WHERE emp_id = ?");
+				    ps.setString(1, id);
+				    rs = ps.executeQuery();
+				    while(rs.next()) {
+					   Username = rs.getString("username");
+					   Password = rs.getString("password");
+					   user_type = rs.getString("user_type").equals("admin") ? true : false;
+				    }
+				  
+			  }
 				   
 	    	 }catch(HeadlessException | SQLException ex){
 	    		 JOptionPane.showMessageDialog(null, ex );
@@ -360,16 +364,20 @@ class EmployeeEdit{
 			             ps.executeUpdate();
 			             
 
-			             ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
-			             ps.setString(1, txtEditUsername.getText());
-			             if(fieldEditPassword.getPassword() != null || !String.valueOf(fieldEditPassword.getPassword()).equals("")) {
-			            	 ps.setString(2, String.valueOf(fieldEditPassword.getPassword()));
-			             }else {
-			            	 ps.setString(2, Password);
+			             if(true) {
+			            	   ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
+					             ps.setString(1, txtEditUsername.getText());
+					             if(fieldEditPassword.getPassword() != null || !String.valueOf(fieldEditPassword.getPassword()).equals("")) {
+					            	 ps.setString(2, String.valueOf(fieldEditPassword.getPassword()));
+					             }else {
+					            	 ps.setString(2, Password);
+					             }
+					             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
+					             ps.setString(4, id);
+					             ps.executeUpdate();
 			             }
-			             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
-			             ps.setString(4, id);
-			             ps.executeUpdate();
+			             
+			          
 			             
 			             JOptionPane.showMessageDialog(null, "Updated");
 			             updateTable();
@@ -482,6 +490,21 @@ class EmployeeEdit{
 			chckEditUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
 			chckEditUser.setBounds(27, 396, 97, 31);
 			frame.getContentPane().add(chckEditUser);
+			
+			
+			if(empstatus.equals("inactive")) {
+				JLabel Activate = new JLabel("User Type");
+				Activate.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
+				Activate.setBounds(50, 400, 295, 21);
+				frame.getContentPane().add(Activate);
+				
+				chckActUser = new JCheckBox("Set Active?");
+				chckActUser.setBackground(new Color(255, 255, 255));
+				chckActUser.setSelected(false);
+				chckActUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
+				chckActUser.setBounds(50, 400, 97, 31);
+				frame.getContentPane().add(chckActUser);
+			}
 
 			JLabel GoShopperAdmin_Logo = new JLabel("New label");
 			GoShopperAdmin_Logo.setIcon(new ImageIcon(adminlogo));

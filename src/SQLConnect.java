@@ -21,7 +21,7 @@ public class SQLConnect {
 	public static enum LogType {
 	    INSERT("insert"),
 	    UPDATE("update"),
-	    DELETE("delete");
+	    DISABLE("disable");
 	    
 	    private String val;
 	    

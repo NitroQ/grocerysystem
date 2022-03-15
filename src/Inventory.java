@@ -115,8 +115,8 @@ public class Inventory extends SQLConnect{
 		    		family = "Added";
 		    	}else if(rs.getString("family").equals("update")) {
 		    		family = "Changed";
-		    	}else if(rs.getString("family").equals("deleted")) {
-		    		family = "Removed";
+		    	}else if(rs.getString("family").equals("disable")) {
+		    		family = "Set No Stock";
 		    	}
 		    	
 		    	
@@ -217,34 +217,33 @@ public class Inventory extends SQLConnect{
 		btnEdit.setBounds(784, 133, 89, 30);
 		frame.getContentPane().add(btnEdit);
 		
-		JButton btnDelete = new JButton("Delete");
-//		btnDelete.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				int row = table.getSelectedRow();
-//				if(row != -1) {
-//					try{
-//						String del = String.valueOf(table.getModel().getValueAt(row, 0)); 
-//					    con = DriverManager.getConnection(connectionUrl);
-//					    ps = con.prepareStatement("DELETE FROM Users WHERE emp_id = ?; DELETE FROM Employee WHERE emp_id = ?");
-//					    ps.setString(1, del);
-//					    ps.setString(2, del);
-//
-//					    int n = JOptionPane.showConfirmDialog(null, "Confirm Delete? \n this will also delete User Login" , "WARNING", JOptionPane.YES_NO_OPTION);
-//
-//					      if(n == JOptionPane.YES_OPTION) {
-//					          ps.executeUpdate();
-//					          updateTable();
-//					      }
-//				          
-//				 	 }catch(HeadlessException | SQLException ex){
-//				 		 JOptionPane.showMessageDialog(null, ex );
-//				      }
-//					
-//				}else {
-//					JOptionPane.showMessageDialog(null, "No Selected Item");
-//				}
-//			}
-//		});
+		JButton btnDelete = new JButton("No Stock");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = table.getSelectedRow();
+				if(row != -1) {
+					try{
+						String del = String.valueOf(table.getModel().getValueAt(row, 0)); 
+					    con = DriverManager.getConnection(connectionUrl);
+					    ps = con.prepareStatement("UPDATE Inventory SET qty = 0 WHERE sku = ?");
+					    ps.setString(1, del);
+
+					    int n = JOptionPane.showConfirmDialog(null, "Confirm Set No Stock?" , "WARNING", JOptionPane.YES_NO_OPTION);
+
+					      if(n == JOptionPane.YES_OPTION) {
+					          ps.executeUpdate();
+					          updateTable();
+					      }
+				          
+				 	 }catch(HeadlessException | SQLException ex){
+				 		 JOptionPane.showMessageDialog(null, ex );
+				      }
+					
+				}else {
+					JOptionPane.showMessageDialog(null, "No Selected Item");
+				}
+			}
+		});
 		btnDelete.setForeground(new Color(255, 255, 255));
 		btnDelete.setBackground(new Color(220, 20, 60));
 		btnDelete.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));

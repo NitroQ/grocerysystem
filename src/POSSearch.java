@@ -42,7 +42,7 @@ public class POSSearch extends SQLConnect {
 		  model.setRowCount(0);
 		try{
 		    con = DriverManager.getConnection(connectionUrl);
-		    ps = con.prepareStatement("SELECT * FROM Inventory");
+		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE qty <> 0");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
 		    	model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});

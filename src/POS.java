@@ -209,11 +209,13 @@ public class POS extends SQLConnect{
         	
     				try{
     				    con = DriverManager.getConnection(connectionUrl);
-    				    ps = con.prepareStatement("INSERT INTO Sales (emp_id, payment, discount, total) VALUES (?,?,?,?); SELECT @@IDENTITY AS 'identity';");
+    				    ps = con.prepareStatement("INSERT INTO Sales (emp_id, payment, discount, total, payment_amt, change) VALUES (?,?,?,?); SELECT @@IDENTITY AS 'identity';");
     		             ps.setString(1, emp_id);
     		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
     		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("GoDiscount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
     		             ps.setString(4, txtView_GrandTotal.getText().toString());
+    		             ps.setString(5, txt_Cash.getText());
+    		             ps.setString(6, txt_change.getText());
     		             rs = ps.executeQuery();
     		             while(rs.next()) {
     		            	 sale_id = rs.getString("identity");

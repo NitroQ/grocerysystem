@@ -43,9 +43,12 @@ public class EmployeeEdit1 extends SQLConnect {
      private Boolean user_type;
 
 
-	public EmployeeEdit1(String id) {
+     
+     
+	public static void EmployeeEdit1(String id) {
 		this.id = id;
 		initialize();
+		frame.setVisible(true);
 	}
 
 	public void find() {
