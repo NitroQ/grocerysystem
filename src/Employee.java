@@ -364,7 +364,7 @@ class EmployeeEdit{
 			             ps.executeUpdate();
 			             
 
-			             if(true) {
+			             if(empstatus.equals("active")) {
 			            	   ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
 					             ps.setString(1, txtEditUsername.getText());
 					             if(fieldEditPassword.getPassword() != null || !String.valueOf(fieldEditPassword.getPassword()).equals("")) {
@@ -375,6 +375,15 @@ class EmployeeEdit{
 					             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
 					             ps.setString(4, id);
 					             ps.executeUpdate();
+			             }else if(empstatus.equals("inactive") &&  chckActUser.isSelected()) {
+			            	  ps = con.prepareStatement("INSERT INTO Users (emp_id, username, password, user_type) VALUES  (?,?,?,?)");
+					             ps.setString(1, emp_id);
+					             ps.setString(2, txtEditUsername.getText());
+					             ps.setString(3, String.valueOf(fieldEditPassword.getPassword()));
+					             ps.setString(4, chckEditUser.isSelected() ? "admin" : "emp" );
+					             ps.executeUpdate();
+			             }else {
+			            	 JOptionPane.showMessageDialog(null, "Error Occured");
 			             }
 			             
 			          
@@ -495,14 +504,14 @@ class EmployeeEdit{
 			if(empstatus.equals("inactive")) {
 				JLabel Activate = new JLabel("User Type");
 				Activate.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
-				Activate.setBounds(50, 400, 295, 21);
+				Activate.setBounds(150, 369, 295, 21);
 				frame.getContentPane().add(Activate);
 				
 				chckActUser = new JCheckBox("Set Active?");
 				chckActUser.setBackground(new Color(255, 255, 255));
 				chckActUser.setSelected(false);
 				chckActUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
-				chckActUser.setBounds(50, 400, 97, 31);
+				chckActUser.setBounds(150, 396, 97, 31);
 				frame.getContentPane().add(chckActUser);
 			}
 
