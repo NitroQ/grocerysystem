@@ -221,15 +221,7 @@ public class Employee extends SQLConnect {
 		btnDelete.setBackground(new Color(220, 20, 60));
 		btnDelete.setBounds(814, 30, 102, 35);
 		panel.add(btnDelete);
-		
-//		JButton btnNewButton = new JButton("New button");
-//		btnNewButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				updateTable();
-//			}
-//		});
-//		btnNewButton.setBounds(524, 27, 89, 23);
-//		panel.add(btnNewButton);
+	
 		
 		JLabel GoShopperAdmin_Logo = new JLabel();
 		Image adminlogo = new ImageIcon(this.getClass().getResource("/LogoAdmin.png")).getImage();

@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
 public class Admin extends SQLConnect {
 
 	JFrame frame;
-	 
+	private Admin_ViewSales view;
 	private Double total_sales = 0.00, total_cost = 0.00, total_profit = 0.00;
 	private int total_trans = 0;
 	private String emp_id, type;
@@ -85,7 +85,10 @@ public class Admin extends SQLConnect {
 		this.type = type;
 		initialize();
 	}
-
+	public void closeSubWindow() {
+		if(view != null)
+			view.frame.dispose();
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -114,6 +117,7 @@ public class Admin extends SQLConnect {
 				Employee emp = new Employee(emp_id, type);
 				emp.frame.setVisible(true);
 				frame.dispose();
+				closeSubWindow();
 			}
 			
 		});
@@ -128,6 +132,7 @@ public class Admin extends SQLConnect {
 					Login log_in = new Login();
 					log_in.frame.setVisible(true);
 					frame.dispose();
+					closeSubWindow();
 				} else {
 					frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				}
@@ -139,6 +144,25 @@ public class Admin extends SQLConnect {
 		LogOut.setBounds(865, 34, 120, 35);
 		frame.getContentPane().add(LogOut);
 		
+		JButton viewSales_btn = new JButton("View");
+		viewSales_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = table_Sales.getSelectedRow();
+				if(row != -1) {
+					String id = table_Sales.getModel().getValueAt(row, 0).toString();
+					Admin_ViewSales view = new Admin_ViewSales(id);
+					view.frame.setVisible(true);
+				}else {
+					JOptionPane.showMessageDialog(null, "No selected sale.");
+				}
+				
+			}
+		});
+		viewSales_btn.setForeground(Color.WHITE);
+		viewSales_btn.setFont(new Font("Dialog", Font.BOLD, 14));
+		viewSales_btn.setBackground(new Color(204, 102, 102));
+		viewSales_btn.setBounds(884, 96, 91, 35);
+		frame.getContentPane().add(viewSales_btn);
 		
 		JButton inv_btn = new JButton("Inventory");
 		inv_btn.addActionListener(new ActionListener() {
@@ -146,6 +170,7 @@ public class Admin extends SQLConnect {
 				Inventory inv = new Inventory(emp_id, type);
 				inv.frame.setVisible(true);
 				frame.dispose();
+				closeSubWindow();
 			}
 		});
 		inv_btn.setForeground(Color.WHITE);
@@ -160,6 +185,7 @@ public class Admin extends SQLConnect {
 				POS pos = new POS(emp_id, type);
 				pos.frame.setVisible(true);
 				frame.dispose();
+				closeSubWindow();
 			}
 		});
 		pos_btn.setForeground(Color.WHITE);
@@ -310,6 +336,8 @@ public class Admin extends SQLConnect {
 		GoShopperAdmin_Logo_1.setIcon(new ImageIcon(bg));
 		GoShopperAdmin_Logo_1.setBounds(0, 0, 1006, 685);
 		frame.getContentPane().add(GoShopperAdmin_Logo_1);
+		
+		
 	
 	}
 }
