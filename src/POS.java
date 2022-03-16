@@ -39,9 +39,9 @@ public class POS extends SQLConnect{
 	JFrame frame;
 	private POSSearch search_window;
 	private JTable table;
-    private JButton btn_Cancel,btn_Pay,btnNewButton_7, btnNewButton_8,btn_Print,btn_Void;
+    private JButton btn_Cancel,btn_Pay,btnNewButton_7, btnNewButton_8,btn_Void;
     private JTextField txt_Qt,skuinput,txt_Cash;
-    private JLabel lbl_Skugoinput, lbl_Qt, GoShopperAdmin_Logo,lbl_Discount_2,lbl_Discount_1,lbl_Discount_3,GoShopper_BG,lbl_Discount_4,txt_change, lbl_Discount_6, lbl_Discount_7,lbl_Discount_8,lbl_Discount_9,txtView_Subtotal,txtView_Discount,txtView_VAT, txtView_GrandTotal,viewitem,viewprice;
+    private JLabel lbl_Skugoinput, Warning, lbl_Qt, GoShopperAdmin_Logo,lbl_Discount_2,lbl_Discount_1,lbl_Discount_3,GoShopper_BG,lbl_Discount_4,txt_change, lbl_Discount_6, lbl_Discount_7,lbl_Discount_8,lbl_Discount_9,txtView_Subtotal,txtView_Discount,txtView_VAT, txtView_GrandTotal,viewitem,viewprice;
 	private JComboBox jcb_GoDiscount, jcb_PaymentMethod;
     JPanel panel;
     private String emp_id, type; 
@@ -62,23 +62,48 @@ public class POS extends SQLConnect{
 		initialize();
 	}
 	
+	public void noSaleReset() {
+		model.setRowCount(0);
+		skuinput.setText("");
+		txt_Qt.setText("");
+		viewitem.setText("");
+		viewprice.setText("");
+		txt_Cash.setText("");
+		txt_change.setText("");
+		jcb_GoDiscount.setSelectedItem("No Discount");
+		jcb_PaymentMethod.setSelectedItem("CASH");
+	}
+
+	
 	public void addSKU(String sku, String qty) {
+		
+//		   for(int i= 0; i < model.getRowCount(); i++) {
+//				if(model.getValueAt(i, 0).toString().equals(sku)) {
+//					int new_qty = Integer.parseInt(qty) + Integer.parseInt(model.getValueAt(i, 2).toString());
+//					Double new_total = Double.parseDouble(model.getValueAt(i, 3).toString()) + total;
+//					model.setValueAt(new Object [] {String.valueOf(new_qty)}, i, 2);
+//				}else {
+//					
+//				}
+//			}
 		try{
 		    con = DriverManager.getConnection(connectionUrl);
 		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
 		    ps.setString(1, sku);
 		    rs = ps.executeQuery();
 	
-			   while(rs.next()) {
+			   if(rs.next()) {
 				   String prodname = rs.getString("prod_name");
 				   String value = rs.getString("price");
-				   String total = String.format("%.2f",Double.parseDouble(qty) * Double.parseDouble(value));
-   			  	model.addRow(new Object [] {rs.getString("sku"),prodname, qty , total });
+				   Double total = Double.parseDouble(qty) * Double.parseDouble(value);
+				model.addRow(new Object [] {rs.getString("sku"),prodname, qty , String.format("%.2f", total) });
        			viewitem.setText(prodname);
        			viewprice.setText(value);
        			updateTotal();
        			skuinput.setText("");
        			txt_Qt.setText("");
+			   }else {
+				   Warning.setVisible(true);
 			   }
 			 
     	 }catch(HeadlessException | SQLException ex){
@@ -216,10 +241,15 @@ public class POS extends SQLConnect{
         frame.getContentPane().add(JSB_Purchase);
         
         btn_Cancel = new JButton("Cancel");
+        btn_Cancel.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		noSaleReset();
+        	}
+        });
         btn_Cancel.setForeground(new Color(255, 255, 255));
         btn_Cancel.setFont(new Font("Segoe UI Variable", Font.BOLD, 17));
         btn_Cancel.setBackground(new Color(220, 20, 60));
-        btn_Cancel.setBounds(34, 571, 180, 63);
+        btn_Cancel.setBounds(34, 571, 155, 63);
         frame.getContentPane().add(btn_Cancel);
         
         btn_Pay = new JButton("Pay");
@@ -271,7 +301,8 @@ public class POS extends SQLConnect{
            			             ps.executeUpdate();   
         		   			}
     	            	 	JOptionPane.showMessageDialog(null, "Transaction Complete.");
-    					}
+    	            	 	noSaleReset();
+    	            	 }
 //    		             updateTable();
     		             
     		    	 }catch(HeadlessException | SQLException ex){
@@ -283,7 +314,7 @@ public class POS extends SQLConnect{
         btn_Pay.setBackground(new Color(0, 139, 139));
         btn_Pay.setForeground(new Color(255, 255, 255));
         btn_Pay.setFont(new Font("Segoe UI Variable", Font.BOLD, 17));
-        btn_Pay.setBounds(639, 571, 332, 63);
+        btn_Pay.setBounds(367, 571, 307, 63);
         frame.getContentPane().add(btn_Pay);
         
         btnNewButton_7 = new JButton("Search SKU");
@@ -296,20 +327,25 @@ public class POS extends SQLConnect{
         btnNewButton_7.setBackground(new Color(0, 139, 139));
         btnNewButton_7.setForeground(new Color(255, 255, 255));
         btnNewButton_7.setFont(new Font("Segoe UI Variable", Font.BOLD, 15));
-        btnNewButton_7.setBounds(839, 182, 132, 35);
+        btnNewButton_7.setBounds(688, 268, 283, 35);
         frame.getContentPane().add(btnNewButton_7);
         
         btnNewButton_8 = new JButton("Add SKU");
         btnNewButton_8.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		String sku_add = skuinput.getText();
-        		addSKU(sku_add, txt_Qt.getText().equals("") ? "1" : txt_Qt.getText());
+        		if(sku_add.equals("0")) {
+        			JOptionPane.showMessageDialog(null, "Quantity cannot be zero");
+        		}else {
+        			addSKU(sku_add, txt_Qt.getText().equals("") ? "1" : txt_Qt.getText());
+        		}
+        		
         	}
         });
         btnNewButton_8.setForeground(new Color(255, 255, 255));
         btnNewButton_8.setBackground(new Color(220, 20, 60));
         btnNewButton_8.setFont(new Font("Segoe UI Variable", Font.BOLD, 15));
-        btnNewButton_8.setBounds(688, 182, 146, 35);
+        btnNewButton_8.setBounds(688, 208, 283, 49);
         frame.getContentPane().add(btnNewButton_8);
         
         txt_Qt = new JTextField();
@@ -317,19 +353,6 @@ public class POS extends SQLConnect{
         txt_Qt.setColumns(10);
         txt_Qt.setBounds(883, 137, 88, 35);
         frame.getContentPane().add(txt_Qt);
-        
-        btn_Print = new JButton("Print");
-        btn_Print.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		 
-        		
-        	}
-        });
-        btn_Print.setForeground(new Color(255, 255, 255));
-        btn_Print.setFont(new Font("Segoe UI Variable", Font.BOLD, 17));
-        btn_Print.setBackground(new Color(220, 20, 60));
-        btn_Print.setBounds(224, 571, 180, 63);
-        frame.getContentPane().add(btn_Print);
         
         btn_Void = new JButton("Void");
         btn_Void.addActionListener(new ActionListener() {
@@ -349,10 +372,16 @@ public class POS extends SQLConnect{
         btn_Void.setBackground(new Color(220, 20, 60));
         btn_Void.setForeground(new Color(255, 255, 255));
         btn_Void.setFont(new Font("Segoe UI Variable", Font.BOLD, 17));
-        btn_Void.setBounds(411, 571, 218, 63);
+        btn_Void.setBounds(199, 571, 155, 63);
         frame.getContentPane().add(btn_Void);
         
         skuinput = new JTextField();
+        skuinput.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		Warning.setVisible(false);
+        	}
+        });
         skuinput.setBackground(new Color(245, 245, 245));
         skuinput.setColumns(10);
         skuinput.setBounds(688, 137, 185, 35);
@@ -367,7 +396,7 @@ public class POS extends SQLConnect{
         jcb_GoDiscount.setBackground(new Color(255, 255, 255));
         jcb_GoDiscount.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
         jcb_GoDiscount.setModel(new DefaultComboBoxModel(new String[] {"No Discount", "PWD", "Senior", "Member"}));
-        jcb_GoDiscount.setBounds(688, 273, 283, 35);
+        jcb_GoDiscount.setBounds(688, 346, 283, 35);
         frame.getContentPane().add(jcb_GoDiscount);
         
         txt_Cash = new JTextField();    
@@ -383,29 +412,29 @@ public class POS extends SQLConnect{
         });
         txt_Cash.setFont(new Font("Tahoma", Font.PLAIN, 19));
         txt_Cash.setColumns(10);
-        txt_Cash.setBounds(688, 437, 283, 37);
+        txt_Cash.setBounds(688, 506, 283, 37);
         frame.getContentPane().add(txt_Cash);
         
         jcb_PaymentMethod = new JComboBox();
         jcb_PaymentMethod.setBackground(new Color(245, 245, 245));
         jcb_PaymentMethod.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
         jcb_PaymentMethod.setModel(new DefaultComboBoxModel(new String[] {"CASH", "VISA", "MASTER CARD"}));
-        jcb_PaymentMethod.setBounds(688, 355, 283, 35);
+        jcb_PaymentMethod.setBounds(688, 428, 283, 35);
         frame.getContentPane().add(jcb_PaymentMethod);
         
         JLabel lbl_Discount = new JLabel("Discount");
         lbl_Discount.setFont(new Font("Segoe UI Variable", Font.ITALIC, 20));
-        lbl_Discount.setBounds(688, 241, 132, 22);
+        lbl_Discount.setBounds(688, 314, 132, 22);
         frame.getContentPane().add(lbl_Discount);
         
-        lbl_Skugoinput = new JLabel("SKU GoInput");
+        lbl_Skugoinput = new JLabel("SKU Input");
         lbl_Skugoinput.setFont(new Font("Segoe UI Variable", Font.BOLD, 24));
         lbl_Skugoinput.setBounds(687, 93, 199, 35);
         frame.getContentPane().add(lbl_Skugoinput);
         
-        lbl_Qt = new JLabel("Qt.");
+        lbl_Qt = new JLabel("Qty");
         lbl_Qt.setFont(new Font("Segoe UI Variable", Font.BOLD, 24));
-        lbl_Qt.setBounds(883, 93, 90, 35);
+        lbl_Qt.setBounds(883, 91, 90, 35);
         frame.getContentPane().add(lbl_Qt);
         
         JButton admin_btn = new JButton("Admin");
@@ -464,17 +493,17 @@ public class POS extends SQLConnect{
         
         lbl_Discount_2 = new JLabel("Mode of Payment");
         lbl_Discount_2.setFont(new Font("Segoe UI Variable", Font.ITALIC, 20));
-        lbl_Discount_2.setBounds(688, 323, 218, 22);
+        lbl_Discount_2.setBounds(688, 396, 218, 22);
         frame.getContentPane().add(lbl_Discount_2);
         
         lbl_Discount_1 = new JLabel("Payment Value");
         lbl_Discount_1.setFont(new Font("Segoe UI Variable", Font.ITALIC, 20));
-        lbl_Discount_1.setBounds(688, 405, 218, 22);
+        lbl_Discount_1.setBounds(688, 474, 218, 22);
         frame.getContentPane().add(lbl_Discount_1);
         
         panel = new JPanel();
         panel.setBackground(new Color(70, 130, 180));
-        panel.setBounds(688, 484, 283, 72);
+        panel.setBounds(688, 562, 283, 72);
         frame.getContentPane().add(panel);
         panel.setLayout(null);
         
@@ -483,6 +512,12 @@ public class POS extends SQLConnect{
         lbl_Discount_4.setBounds(10, 35, 107, 27);
         lbl_Discount_4.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
         panel.add(lbl_Discount_4);
+        
+       Warning = new JLabel("Not Found!");
+        Warning.setForeground(Color.RED);
+        Warning.setVisible(false);
+        Warning.setBounds(688, 183, 109, 14);
+        frame.getContentPane().add(Warning);
         
         txt_change = new JLabel("");
         txt_change.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -507,6 +542,8 @@ public class POS extends SQLConnect{
 		GoShopper_BG.setIcon(new ImageIcon(bg));
 		GoShopper_BG.setBounds(0, 0, 1006, 685);
         frame.getContentPane().add(GoShopper_BG);
+        
+  
         
 	}
 	public class POSSearch {
@@ -636,9 +673,14 @@ public class POS extends SQLConnect{
 	        btnAdditem.addMouseListener(new MouseAdapter() {
 	        	@Override
 	        	public void mouseClicked(MouseEvent e) {
-	        		int itemrow = table.getSelectedRow();
-	        		addSKU(inv_model.getValueAt(itemrow, 0).toString(), searchqty.getText().equals("") ? "1" : searchqty.getText());
-	        		frame.dispose();
+	        		String pos_qty = searchqty.getText();
+	        		if(pos_qty.equals("0")) {
+	        			JOptionPane.showMessageDialog(null, "Quantity cannot be zero");
+	        		}else {
+		        		int itemrow = table.getSelectedRow();
+		        		addSKU(inv_model.getValueAt(itemrow, 0).toString(), pos_qty.equals("") ? "1" : pos_qty);
+		        		frame.dispose();
+	        		}
 	        	}
 	        });
 	        btnAdditem.setForeground(new Color(255, 255, 255));
@@ -689,5 +731,4 @@ public class POS extends SQLConnect{
 	    
 		}
 	}
-	
 }
