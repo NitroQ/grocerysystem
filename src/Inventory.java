@@ -36,8 +36,8 @@ public class Inventory extends SQLConnect{
 	JFrame frame;
 	private String emp_id, type;
 	private JTable table, tablehistory, tablelow;
-	
-	
+	private InventoryAdd inv_add;
+	private InventoryEdit edit_inv;
 	private  String[] prodcolumns = {"SKU", "Product Name", "Stock", "Cost", "Price"};
 	 private Object[][] proddata = {};
 	  @SuppressWarnings("serial")
@@ -81,7 +81,14 @@ public class Inventory extends SQLConnect{
 		initialize();
 	}
 
-	
+	public void closeSubWindows() {
+		if (edit_inv != null) {
+			edit_inv.frame.dispose();
+		}
+		if (inv_add != null) {
+			inv_add.frame.dispose();
+		}
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -189,7 +196,7 @@ public class Inventory extends SQLConnect{
 		btnAdd.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InventoryAdd inv_add = new InventoryAdd();
+				inv_add = new InventoryAdd();
 				inv_add.frame.setVisible(true);
 			}
 		});
@@ -205,7 +212,7 @@ public class Inventory extends SQLConnect{
 				int row = table.getSelectedRow();
 				
 				if(row != -1) {
-					InventoryEdit edit_inv = new InventoryEdit(String.valueOf(table.getModel().getValueAt(row, 0)));
+					edit_inv = new InventoryEdit(String.valueOf(table.getModel().getValueAt(row, 0)));
 					edit_inv.frame.setVisible(true);
 				}else {
 					JOptionPane.showMessageDialog(null, "No Selected Item");
@@ -279,6 +286,7 @@ public class Inventory extends SQLConnect{
 			public void actionPerformed(ActionEvent e) {
 				Admin window = new Admin(emp_id, type);
 				window.frame.setVisible(true);
+				closeSubWindows();
 				frame.dispose();
 			}
 		});
@@ -290,6 +298,7 @@ public class Inventory extends SQLConnect{
 			public void actionPerformed(ActionEvent e) {
 				POS pos = new POS(emp_id, type);
 				pos.frame.setVisible(true);
+				closeSubWindows();
 				frame.dispose();
 			}
 		});
@@ -308,6 +317,7 @@ public class Inventory extends SQLConnect{
 				if (confirmed == JOptionPane.YES_OPTION) {
 					Login log_in = new Login();
 					log_in.frame.setVisible(true);
+					closeSubWindows();
 					frame.dispose();
 				} else {
 					frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

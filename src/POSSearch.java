@@ -20,6 +20,8 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class POSSearch extends SQLConnect {
 
@@ -109,13 +111,6 @@ public class POSSearch extends SQLConnect {
         frame.getContentPane().add(txtsearch);
         txtsearch.setColumns(10);
         
-        JButton btnSearchSKU = new JButton("Search SKU");
-        btnSearchSKU.setForeground(new Color(255, 255, 255));
-        btnSearchSKU.setBackground(new Color(220, 20, 60));
-        btnSearchSKU.setFont(new Font("Segoe UI Variable", Font.BOLD, 14));
-        btnSearchSKU.setBounds(456, 127, 147, 35);
-        frame.getContentPane().add(btnSearchSKU);
-        
         JButton btnAdditem = new JButton("Add Item");
         btnAdditem.addMouseListener(new MouseAdapter() {
         	@Override
@@ -151,5 +146,11 @@ public class POSSearch extends SQLConnect {
         lblNewLabel.setIcon(new ImageIcon(poslogo));
 		lblNewLabel.setBounds(-15, 0, 633, 446);
         frame.getContentPane().add(lblNewLabel);
+        
+        JComboBox comboBox = new JComboBox();
+        comboBox.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
+        comboBox.setModel(new DefaultComboBoxModel(new String[] {"Search SKU", "Search Product"}));
+        comboBox.setBounds(456, 127, 147, 34);
+        frame.getContentPane().add(comboBox);
 	}
 }
