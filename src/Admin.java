@@ -44,7 +44,7 @@ public class Admin extends SQLConnect {
 		  model.setRowCount(0);
 		try{
 		    con = DriverManager.getConnection(connectionUrl);
-		    ps = con.prepareStatement("SELECT * FROM Sales");
+		    ps = con.prepareStatement("SELECT * FROM Sales ORDER BY sale_id DESC");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
 		    	model.addRow(new Object[]{rs.getString("sale_id"),rs.getString("total"), rs.getString("sale_date")});

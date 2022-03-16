@@ -362,12 +362,13 @@ class EmployeeEdit{
 			             ps.setString(7, txtEditAge.getText());
 			             ps.setString(8, id);
 			             ps.executeUpdate();
-			             
 
+			             System.out.println(Password);
+			             
 			             if(empstatus.equals("active")) {
 			            	   ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
 					             ps.setString(1, txtEditUsername.getText());
-					             if(fieldEditPassword.getPassword() != null || !String.valueOf(fieldEditPassword.getPassword()).equals("")) {
+					             if(fieldEditPassword.getPassword() != null && !String.valueOf(fieldEditPassword.getPassword()).trim().equals("")) {
 					            	 ps.setString(2, String.valueOf(fieldEditPassword.getPassword()));
 					             }else {
 					            	 ps.setString(2, Password);

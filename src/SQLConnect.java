@@ -56,8 +56,5 @@ public class SQLConnect {
     		 JOptionPane.showMessageDialog(null, ex );
          }
 	}
-	
-	public static void createlog(LogType family, String emp_id, String where) {
-		createlog(family, emp_id, where, "");
-	}
+
 }

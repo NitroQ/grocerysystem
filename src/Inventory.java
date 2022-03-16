@@ -77,9 +77,6 @@ public class Inventory extends SQLConnect{
 		initialize();
 	}
 
-	public static void logs() {
-		
-	}
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -90,7 +87,7 @@ public class Inventory extends SQLConnect{
 		   historymodel.setRowCount(0);
 		try{
 		    con = DriverManager.getConnection(connectionUrl);
-		    ps = con.prepareStatement("SELECT * FROM Inventory");
+		    ps = con.prepareStatement("SELECT * FROM Inventory ORDER BY prod_name ASC");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
 		    	String prodname = rs.getString("prod_name");
@@ -107,7 +104,7 @@ public class Inventory extends SQLConnect{
 		    }
 		    
 		    con = DriverManager.getConnection(connectionUrl);
-		    ps = con.prepareStatement("SELECT * FROM Logs WHERE loc = 'inventory'");
+		    ps = con.prepareStatement("SELECT * FROM Logs WHERE loc = 'inventory' ORDER BY id DESC");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
 		    	String family = "";
@@ -118,8 +115,6 @@ public class Inventory extends SQLConnect{
 		    	}else if(rs.getString("family").equals("disable")) {
 		    		family = "Set No Stock";
 		    	}
-		    	
-		    	
 		    	String logging = family + " " + rs.getString("remarks");  
 		    	historymodel.addRow(new Object[] { logging, rs.getString("log_date") });
 		    }
@@ -221,23 +216,27 @@ public class Inventory extends SQLConnect{
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
-				if(row != -1) {
-					try{
-						String del = String.valueOf(table.getModel().getValueAt(row, 0)); 
-					    con = DriverManager.getConnection(connectionUrl);
-					    ps = con.prepareStatement("UPDATE Inventory SET qty = 0 WHERE sku = ?");
-					    ps.setString(1, del);
-
-					    int n = JOptionPane.showConfirmDialog(null, "Confirm Set No Stock?" , "WARNING", JOptionPane.YES_NO_OPTION);
-
-					      if(n == JOptionPane.YES_OPTION) {
-					          ps.executeUpdate();
+					if(table.getModel().getValueAt(row, 2).equals("0")) {
+						JOptionPane.showMessageDialog(null, "Stock is already set to 0");
+					}else if(row != -1) {
+						try{
+							String del = String.valueOf(table.getModel().getValueAt(row, 0)); 
+						    con = DriverManager.getConnection(connectionUrl);
+						    ps = con.prepareStatement("UPDATE Inventory SET qty = 0 WHERE sku = ?");
+						    ps.setString(1, del);
+	
+						    int n = JOptionPane.showConfirmDialog(null, "Confirm Set No Stock?" , "WARNING", JOptionPane.YES_NO_OPTION);
+	
+						      if(n == JOptionPane.YES_OPTION) {
+						          ps.executeUpdate();
+						          String comment =   del + " : " + " sku now unavailable";
+						           SQLConnect.createlog(SQLConnect.LogType.DISABLE, emp_id, "inventory", comment);
+						      }
 					          updateTable();
+					          
+					 	 }catch(HeadlessException | SQLException ex){
+					 		 JOptionPane.showMessageDialog(null, ex );
 					      }
-				          
-				 	 }catch(HeadlessException | SQLException ex){
-				 		 JOptionPane.showMessageDialog(null, ex );
-				      }
 					
 				}else {
 					JOptionPane.showMessageDialog(null, "No Selected Item");
