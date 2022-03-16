@@ -383,6 +383,9 @@ class EmployeeEdit{
 				 		    else if(Age.trim().equals("")) {
 				 		    	JOptionPane.showMessageDialog(null, "Age is empty");
 				 		    }
+				 		   else if(empstatus.equals("active") &&  txtEditUsername.getText().trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Username is required.");
+				 		    }
 				 		    else if(empstatus.equals("inactive") &&  chckActUser.isSelected() && String.valueOf(fieldEditPassword.getPassword()).trim().equals("")) {
 				 		    	JOptionPane.showMessageDialog(null, "Password is required.");
 				 		    }
