@@ -50,12 +50,12 @@ public class Admin extends SQLConnect {
 		    	model.addRow(new Object[]{rs.getString("sale_id"),rs.getString("total"), rs.getString("sale_date")});
 		    	total_trans ++;
 		    	
-		    	if (!rs.getString("total").equals(null)) {
+		    	if (rs.getString("total") != null) {
 		    		total_sales += Double.parseDouble(rs.getString("total"));
-		    		if(rs.getString("profit") != null){
-		    			total_profit += Double.parseDouble(rs.getString("profit"));
-		    		}
 		    	}
+	    		if(rs.getString("profit") != null){
+	    			total_profit += Double.parseDouble(rs.getString("profit"));
+	    		}
 		    }
 		    
            
@@ -118,11 +118,11 @@ public class Admin extends SQLConnect {
 			
 		});
 		
-		JButton LogOut = new JButton("Log-Out");
+		JButton LogOut = new JButton("Logout");
 		LogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int confirmed = JOptionPane.showConfirmDialog(null, 
-				"Are you sure you want to Log-Out of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
+				"Are you sure you want to Logout of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
 
 				if (confirmed == JOptionPane.YES_OPTION) {
 					Login log_in = new Login();

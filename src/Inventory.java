@@ -312,7 +312,7 @@ public class Inventory extends SQLConnect{
 		logout_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int confirmed = JOptionPane.showConfirmDialog(null, 
-				"Are you sure you want to Log-Out of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
+				"Are you sure you want to Logout of the System?", "Exit Program Message Box", JOptionPane.YES_NO_OPTION);
 
 				if (confirmed == JOptionPane.YES_OPTION) {
 					Login log_in = new Login();
