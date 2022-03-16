@@ -268,15 +268,12 @@ public class POS extends SQLConnect{
             					 ps = con.prepareStatement("UPDATE Inventory SET qty = ? WHERE sku = ? ");
            			             ps.setString(1, String.valueOf(new_sku));
            			             ps.setString(2, item_sku);
-           			             ps.executeUpdate();
-
-            		             JOptionPane.showMessageDialog(null, "Transaction Complete.");
+           			             ps.executeUpdate();   
         		   			}
+    	            	 	JOptionPane.showMessageDialog(null, "Transaction Complete.");
     					}
 //    		             updateTable();
     		             
-   		            
-    		                
     		    	 }catch(HeadlessException | SQLException ex){
     		    		 JOptionPane.showMessageDialog(null, ex );
     		         }
