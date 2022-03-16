@@ -18,6 +18,9 @@ import java.awt.Image;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComboBox;
@@ -26,28 +29,27 @@ import javax.swing.DefaultComboBoxModel;
 public class POSSearch extends SQLConnect {
 
 	JFrame frame;
-
 	private  String[] columns = {"SKU", "Item", "Price"};
     private Object[][] data = {};
      @SuppressWarnings("serial")
-   private DefaultTableModel model = new DefaultTableModel(data, columns) {
+   private DefaultTableModel inv_model = new DefaultTableModel(data, columns) {
          @Override
            public boolean isCellEditable(int row, int column) {
                return false;
            }
      };
-     private JTextField txtsearch;
-     private JTextField textField_1;
+     private JTextField txtsearch, searchqty;
+     private JComboBox chooseSearch;
 	
 	
 	public void updateTable() {
-		  model.setRowCount(0);
+		 inv_model.setRowCount(0);
 		try{
 		    con = DriverManager.getConnection(connectionUrl);
 		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE qty <> 0");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
-		    	model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+		    	inv_model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
 		    }
              
  	 }catch(HeadlessException | SQLException ex){
@@ -83,7 +85,7 @@ public class POSSearch extends SQLConnect {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null); 
         
-        JTable table = new JTable(model);
+        JTable table = new JTable(inv_model);
         table.setFont(new Font("Segoe UI Variable", Font.PLAIN, 17));
         table.setBounds(10, 11, 372, 233);
         
@@ -105,6 +107,42 @@ public class POSSearch extends SQLConnect {
         frame.getContentPane().add(btnBack);
         
         txtsearch = new JTextField();
+        txtsearch.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		if(chooseSearch.getSelectedItem().equals("Search SKU")) {
+        			inv_model.setRowCount(0);
+        				try{
+        					String searchSKU = "SELECT * FROM Inventory WHERE qty <> 0 AND sku LIKE '%" + txtsearch.getText() +"%'";
+        				    con = DriverManager.getConnection(connectionUrl);
+        				    ps = con.prepareStatement(searchSKU);
+        				    rs = ps.executeQuery();
+        				    while(rs.next()) {
+        				    	inv_model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+        				    }
+        		             
+        		 	 }catch(HeadlessException | SQLException ex){
+        		 		 JOptionPane.showMessageDialog(null, ex );
+        		      }
+        		}if(chooseSearch.getSelectedItem().equals("Search Product")) {
+        			inv_model.setRowCount(0);
+      				try{
+      					String searchSKU = "SELECT * FROM Inventory WHERE qty <> 0 AND prod_name LIKE '%" + txtsearch.getText() +"%'";
+      				    con = DriverManager.getConnection(connectionUrl);
+      				    ps = con.prepareStatement(searchSKU);
+      				    rs = ps.executeQuery();
+      				    while(rs.next()) {
+      				    	inv_model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+      				    }
+      		             
+      		 	 }catch(HeadlessException | SQLException ex){
+      		 		 JOptionPane.showMessageDialog(null, ex );
+      		      }
+	      		}else if(txtsearch.getText().trim().equals("")){
+	        			updateTable();
+	        		}
+        	}
+        });
         txtsearch.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
         txtsearch.setBackground(new Color(245, 245, 245));
         txtsearch.setBounds(30, 127, 416, 35);
@@ -115,7 +153,8 @@ public class POSSearch extends SQLConnect {
         btnAdditem.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		
+        		int itemrow = table.getSelectedRow();
+        		//addSKU(inv_model.getValueAt(itemrow, 0).toString(), searchqty.equals("") ? "1" : searchqty);
         	}
         });
         btnAdditem.setForeground(new Color(255, 255, 255));
@@ -124,12 +163,12 @@ public class POSSearch extends SQLConnect {
         btnAdditem.setBounds(456, 351, 147, 35);
         frame.getContentPane().add(btnAdditem);
         
-        textField_1 = new JTextField();
-        textField_1.setBackground(new Color(245, 245, 245));
-        textField_1.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
-        textField_1.setColumns(10);
-        textField_1.setBounds(136, 351, 312, 35);
-        frame.getContentPane().add(textField_1);
+        searchqty = new JTextField();
+        searchqty.setBackground(new Color(245, 245, 245));
+        searchqty.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
+        searchqty.setColumns(10);
+        searchqty.setBounds(136, 351, 312, 35);
+        frame.getContentPane().add(searchqty);
         
         JLabel lblQuantity = new JLabel("Quantity:");
         lblQuantity.setFont(new Font("Segoe UI Variable", Font.BOLD, 22));
@@ -141,16 +180,18 @@ public class POSSearch extends SQLConnect {
         lblSearchItem.setBounds(27, 86, 152, 35);
         frame.getContentPane().add(lblSearchItem);
         
+        chooseSearch = new JComboBox();
+        chooseSearch.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
+        chooseSearch.setModel(new DefaultComboBoxModel(new String[] {"Search Product", "Search SKU"}));
+        chooseSearch.setBounds(456, 127, 147, 34);
+        frame.getContentPane().add(chooseSearch);
+        
         JLabel lblNewLabel = new JLabel("");
         Image poslogo = new ImageIcon(this.getClass().getResource("/GoShopperLogo_POS.png")).getImage();
         lblNewLabel.setIcon(new ImageIcon(poslogo));
 		lblNewLabel.setBounds(-15, 0, 633, 446);
         frame.getContentPane().add(lblNewLabel);
         
-        JComboBox comboBox = new JComboBox();
-        comboBox.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"Search SKU", "Search Product"}));
-        comboBox.setBounds(456, 127, 147, 34);
-        frame.getContentPane().add(comboBox);
+    
 	}
 }
