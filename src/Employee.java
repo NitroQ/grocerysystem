@@ -19,8 +19,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -351,6 +355,36 @@ class EmployeeEdit{
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try{
+	
+						String Fname = txtEditFName.getText();
+						String Lname = txtEditLName.getText();
+						String Email = txtEditEmail.getText();
+						String Address = txtEditAddress.getText();
+						String Age = txtEditAge.getText();
+						String email = "^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$";
+						Pattern pattern = Pattern.compile(email, Pattern.CASE_INSENSITIVE);
+						Matcher matcher = pattern.matcher(Email);		
+						
+			             if(Fname.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "First name is empty");
+				 		    }
+				 		    else if(Lname.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Surname is empty");
+				 		    }
+				 		    else if(Email.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Email is empty");
+				 		    }
+							else if(!matcher.matches()) {
+								JOptionPane.showMessageDialog(null, "Wrong email format");
+							}
+				 		    else if(Address.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Address is empty");
+				 		    }
+				 		    else if(Age.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Age is empty");
+				 		    }
+				 		    else {
+
 					    con = DriverManager.getConnection(connectionUrl);
 					    ps = con.prepareStatement("UPDATE Employee SET fname = ?, lname = ?, email= ?, empaddress = ?, position = ?, gender = ?, age= ? WHERE emp_id = ? ");
 			             ps.setString(1, txtEditFName.getText());
@@ -363,7 +397,6 @@ class EmployeeEdit{
 			             ps.setString(8, id);
 			             ps.executeUpdate();
 
-			             System.out.println(Password);
 			             
 			             if(empstatus.equals("active")) {
 			            	   ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
@@ -388,9 +421,11 @@ class EmployeeEdit{
 			             }
 			             updateTable();
 			             frame.dispose();
+					}
 			             
-			             
-					 }catch(HeadlessException | SQLException ex){
+
+
+					}catch(HeadlessException | SQLException ex){
 			    		 JOptionPane.showMessageDialog(null, ex );
 			         }
 				}
@@ -479,6 +514,16 @@ class EmployeeEdit{
 			frame.getContentPane().add(lblEditAge);
 			
 			txtEditAge = new JTextField(Age);
+			txtEditAge.addKeyListener(new KeyAdapter() {
+	        	@Override
+	        	public void keyTyped(KeyEvent e) {
+	        		char c = e.getKeyChar();
+	        		
+	        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+	        		e.consume();	        		
+	        			}
+	        	}
+	        });
 			txtEditAge.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtEditAge.setBackground(new Color(245, 245, 245));
 			txtEditAge.setBounds(594, 238, 273, 35);
@@ -602,6 +647,41 @@ class EmployeeAdd {
 				public void actionPerformed(ActionEvent e) {
 					String emp_id = null;
 					try{
+						
+						String Fname = txtFName.getText();
+						String Lname = txtLName.getText();
+						String Email = txtEmail.getText();
+						String Address = txtAddress.getText();
+						String Age = txtAge.getText();
+						String email = "^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$";
+						Pattern pattern = Pattern.compile(email, Pattern.CASE_INSENSITIVE);
+						Matcher matcher = pattern.matcher(Email);		
+						
+			            	 if(Fname.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "First name is empty");
+				 		    }
+				 		    else if(Lname.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Surname is empty");
+				 		    }
+				 		    else if(Email.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Email is empty");
+				 		    }
+							else if(!matcher.matches()) {
+								JOptionPane.showMessageDialog(null, "Wrong email format");
+							}
+				 		    else if(Address.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Address is empty");
+				 		    }
+				 		    else if(Age.trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Age is empty");
+				 		    }
+							 else if(String.valueOf(fieldPassword.getPassword()).trim().equals("")) {
+								JOptionPane.showMessageDialog(null, "Password is required");
+							}
+							else if(txtUsername.getText().trim().equals("")) {
+								JOptionPane.showMessageDialog(null, "Username is required");
+							}
+				 		    else {
 					    con = DriverManager.getConnection(connectionUrl);
 					    ps = con.prepareStatement("INSERT INTO Employee (fname, lname, email, empaddress, position, gender, age) VALUES (?,?,?,?,?,?,?);  SELECT @@IDENTITY AS 'identity';");
 			             ps.setString(1, txtFName.getText() );
@@ -629,10 +709,14 @@ class EmployeeAdd {
 			             JOptionPane.showMessageDialog(null, "Added");
 			             updateTable();
 			             frame.dispose();
+					}
+
+
 			                
 			    	 }catch(HeadlessException | SQLException ex){
 			    		 JOptionPane.showMessageDialog(null, ex );
 			         }
+					 
 				}
 			});
 			btnEdit.setForeground(Color.WHITE);
@@ -716,6 +800,16 @@ class EmployeeAdd {
 			lblEditAge.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
 			lblEditAge.setBounds(594, 208, 294, 21);
 			frame.getContentPane().add(lblEditAge);
+			lblEditAge.addKeyListener(new KeyAdapter() {
+	        	@Override
+	        	public void keyTyped(KeyEvent e) {
+	        		char c = e.getKeyChar();
+	        		
+	        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+	        		e.consume();	        		
+	        			}
+	        	}
+	        });
 			
 			txtAge = new JTextField();
 			txtAge.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));

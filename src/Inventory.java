@@ -5,6 +5,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -23,6 +25,8 @@ import javax.swing.table.DefaultTableModel;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -398,6 +402,16 @@ class InventoryAdd {
 		prodsku.setBackground(new Color(245, 245, 245));
 		prodsku.setColumns(10);
 		prodsku.setBounds(24, 243, 412, 35);
+		prodsku.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				
+				if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+				e.consume();	        		
+					}
+			}
+		});
 		frame.getContentPane().add(prodsku);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("Stock Keeping Unit (SKU)");
@@ -410,6 +424,16 @@ class InventoryAdd {
 		prodqty.setBackground(new Color(245, 245, 245));
 		prodqty.setColumns(10);
 		prodqty.setBounds(24, 321, 412, 35);
+		prodqty.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+        		e.consume();	        		
+        			}
+        	}
+        });
 		frame.getContentPane().add(prodqty);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Quantity");
@@ -422,6 +446,16 @@ class InventoryAdd {
 		prodprice.setBackground(new Color(245, 245, 245));
 		prodprice.setColumns(10);
 		prodprice.setBounds(24, 399, 198, 35);
+		prodprice.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE || c== KeyEvent.VK_PERIOD)) {
+        		e.consume();	        		
+        			}
+        	}
+        });
 		frame.getContentPane().add(prodprice);
 		
 		JLabel lblNewLabel_1_1_1_1 = new JLabel("Price");
@@ -434,6 +468,16 @@ class InventoryAdd {
 		prodcost.setBackground(new Color(245, 245, 245));
 		prodcost.setColumns(10);
 		prodcost.setBounds(232, 399, 204, 35);
+		prodcost.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE || c== KeyEvent.VK_PERIOD)) {
+        		e.consume();	        		
+        			}
+        	}
+        });
 		frame.getContentPane().add(prodcost);
 		
 		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Cost");
@@ -449,18 +493,42 @@ class InventoryAdd {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try{
-					String query = "INSERT INTO Inventory (sku, prod_name, qty, price, cost) VALUES (?,?,?,?,?)";
-				    con = DriverManager.getConnection(connectionUrl);
-				    ps = con.prepareStatement(query);
-		             ps.setString(1, prodsku.getText());
-		             ps.setString(2, prodname.getText());
-		             ps.setString(3, prodqty.getText());
-		             ps.setString(4, prodprice.getText());
-		             ps.setString(5, prodcost.getText());
-		             ps.executeUpdate();   
-		             JOptionPane.showMessageDialog(null, "Added");
-		             updateTable();
-		             frame.dispose();
+
+					String Pname = prodname.getText();
+					String Psku = prodsku.getText();
+					String Pqty = prodqty.getText();
+					String Pprice = prodprice.getText();
+					String Pcost = prodcost.getText();
+					
+		             if(Pname.trim().equals("")) {
+		            	 JOptionPane.showMessageDialog(null, "Product name is empty");
+		             }
+		             else if(Psku.trim().equals("")) {
+		            	 JOptionPane.showMessageDialog(null, "SKU name is empty");
+		             }
+		             else if(Pqty.trim().equals("")) {
+		            	 JOptionPane.showMessageDialog(null, "Quantity name is empty");
+		             }
+		             else if(Pprice.trim().equals("")) {
+		            	 JOptionPane.showMessageDialog(null, "Price name is empty");
+		             }
+		             else if(Pcost.trim().equals("")) {
+		            	 JOptionPane.showMessageDialog(null, "Cost name is empty");
+		             }else {
+		            	 
+						String query = "INSERT INTO Inventory (sku, prod_name, qty, price, cost) VALUES (?,?,?,?,?)";
+						con = DriverManager.getConnection(connectionUrl);
+						ps = con.prepareStatement(query);
+							ps.setString(1, prodsku.getText());
+							ps.setString(2, prodname.getText());
+							ps.setString(3, prodqty.getText());
+							ps.setString(4, prodprice.getText());
+							ps.setString(5, prodcost.getText());
+							ps.executeUpdate();   
+							JOptionPane.showMessageDialog(null, "Added");
+							updateTable();
+							frame.dispose();
+					 }
 		             
 		             String comment =    prodsku.getText() + " | " + prodname.getText() + " |q" +prodqty.getText() + "|c"+prodcost.getText() + "|p" + prodprice.getText();
 		             SQLConnect.createlog(SQLConnect.LogType.INSERT, emp_id, "inventory", comment);
@@ -578,6 +646,16 @@ class InventoryEdit {
 		prodqty.setBackground(new Color(245, 245, 245));
 		prodqty.setColumns(10);
 		prodqty.setBounds(24, 321, 412, 35);
+		prodqty.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+        				e.consume();	        		
+        			}
+        	}
+        });
 		frame.getContentPane().add(prodqty);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Quantity");
@@ -590,6 +668,16 @@ class InventoryEdit {
 		prodprice.setBackground(new Color(245, 245, 245));
 		prodprice.setColumns(10);
 		prodprice.setBounds(24, 399, 198, 35);
+		prodprice.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE || c== KeyEvent.VK_PERIOD)) {
+        		e.consume();	        		
+        			}
+        	}
+        });
 		frame.getContentPane().add(prodprice);
 		
 		JLabel lblNewLabel_1_1_1_1 = new JLabel("Price");
@@ -602,6 +690,16 @@ class InventoryEdit {
 		prodcost.setBackground(new Color(245, 245, 245));
 		prodcost.setColumns(10);
 		prodcost.setBounds(232, 399, 204, 35);
+		prodcost.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE || c== KeyEvent.VK_PERIOD)) {
+        		e.consume();	        		
+        			}
+        	}
+        });
 		frame.getContentPane().add(prodcost);
 		
 		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Cost");
@@ -616,35 +714,55 @@ class InventoryEdit {
 		add_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-					String query = "UPDATE Inventory SET prod_name = ?, qty = ?, price = ?, cost = ? WHERE sku = ?";
-				    con = DriverManager.getConnection(connectionUrl);
-				    ps = con.prepareStatement(query);
-		             ps.setString(1, prodname.getText());
-		             ps.setString(2, prodqty.getText());
-		             ps.setString(3, prodprice.getText());
-		             ps.setString(4, prodcost.getText());
-		             ps.setString(5, prod_id);
-		             ps.executeUpdate();
-		             
-		             String comment = sku + "| ";
-		             if(!prodname.getText().equals(prod_name)) {
-		            	 comment += "name: " + prod_name + "-" + prodname.getText() + " ";
-		             }
-		             if(!prodqty.getText().equals(qty)) {
-		            	 comment += "qty: " + qty + "-" + prodqty.getText() + " ";
-		             }
-		             if(!prodcost.getText().equals(cost)) {
-		            	 comment += "cost: " + cost + "-" + prodcost.getText() + " ";
-		             }
-		             if(!prodprice.getText().equals(price)) {
-		            	 comment += "price: " + price + "-" + prodprice.getText() + " ";
-		             }
-		             
-		             SQLConnect.createlog(SQLConnect.LogType.UPDATE, emp_id, "inventory", comment);
-		             
-		             JOptionPane.showMessageDialog(null, "Updated");
-		             updateTable();
-		             frame.dispose();
+					
+					String Pname = prodname.getText();
+					String Pqty = prodqty.getText();
+					String Pprice = prodprice.getText();
+					String Pcost = prodcost.getText();
+					
+					if(Pname.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Product name is empty");
+					}
+					else if(Pqty.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Quantity name is empty");
+					}
+					else if(Pprice.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Price name is empty");
+					}
+					else if(Pcost.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Cost name is empty");
+					}else {
+
+							String query = "UPDATE Inventory SET prod_name = ?, qty = ?, price = ?, cost = ? WHERE sku = ?";
+							con = DriverManager.getConnection(connectionUrl);
+							ps = con.prepareStatement(query);
+							ps.setString(1, Pname);
+							ps.setString(2, Pqty);
+							ps.setString(3, Pprice);
+							ps.setString(4, Pcost);
+							ps.setString(5, prod_id);
+							ps.executeUpdate();
+							
+							String comment = sku + "| ";
+							if(!prodname.getText().equals(prod_name)) {
+								comment += "name: " + prod_name + "-" + prodname.getText() + " ";
+							}
+							if(!prodqty.getText().equals(qty)) {
+								comment += "qty: " + qty + "-" + prodqty.getText() + " ";
+							}
+							if(!prodcost.getText().equals(cost)) {
+								comment += "cost: " + cost + "-" + prodcost.getText() + " ";
+							}
+							if(!prodprice.getText().equals(price)) {
+								comment += "price: " + price + "-" + prodprice.getText() + " ";
+							}
+							
+							SQLConnect.createlog(SQLConnect.LogType.UPDATE, emp_id, "inventory", comment);
+							
+							JOptionPane.showMessageDialog(null, "Updated");
+							updateTable();
+							frame.dispose();
+					}
 		                
 		    	 }catch(HeadlessException | SQLException ex){
 		    		 JOptionPane.showMessageDialog(null, ex );
