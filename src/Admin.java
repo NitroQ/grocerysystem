@@ -52,7 +52,9 @@ public class Admin extends SQLConnect {
 		    	
 		    	if (!rs.getString("total").equals(null)) {
 		    		total_sales += Double.parseDouble(rs.getString("total"));
-		    		total_profit += total_sales += Double.parseDouble(rs.getString("profit"));
+		    		if(rs.getString("profit") != null){
+		    			total_profit += Double.parseDouble(rs.getString("profit"));
+		    		}
 		    	}
 		    }
 		    
