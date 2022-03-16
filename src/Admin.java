@@ -99,9 +99,9 @@ public class Admin extends SQLConnect {
 		btnNewButton.setFont(new Font("Roboto", Font.BOLD, 14));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Employee emp = new Employee(emp_id);
+				Employee emp = new Employee(emp_id, type);
 				emp.frame.setVisible(true);
-				
+				frame.dispose();
 			}
 			
 		});

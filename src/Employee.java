@@ -37,7 +37,7 @@ import java.awt.Dimension;
 public class Employee extends SQLConnect {
 
 	JFrame frame;
-	private String emp_id;
+	private String emp_id, type;
 	private JTable table_EmployeeList;
     private  String[] columns = {"Employee Number", "Employee Name", "Role"};
     private Object[][] data = {};
@@ -48,6 +48,8 @@ public class Employee extends SQLConnect {
                return false;
            }
      };
+    private EmployeeAdd add_window;
+    private EmployeeEdit edit_emp;
 
 
 	public void updateTable() {
@@ -73,8 +75,9 @@ public class Employee extends SQLConnect {
 	 * Create the application.
 	 */
 
-	public Employee(String emp_id) {
+	public Employee(String emp_id, String type) {
 		this.emp_id = emp_id;
+		this.type = type;
 		initialize();
 	}
 
@@ -104,7 +107,15 @@ public class Employee extends SQLConnect {
 		JButton LogOut = new JButton("Back");
 		LogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Admin window = new Admin(emp_id, type);
+				window.frame.setVisible(true);
 				frame.dispose();			
+				if(add_window != null) {
+					add_window.frame.dispose();
+				}
+				if(edit_emp != null) {
+					edit_emp.frame.dispose();
+				}
 			}
 		});
 		LogOut.setForeground(Color.WHITE);
@@ -145,8 +156,8 @@ public class Employee extends SQLConnect {
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EmployeeAdd window = new EmployeeAdd();
-				window.frame.setVisible(true);
+				add_window = new EmployeeAdd();
+				add_window.frame.setVisible(true);
 				
 			}
 		});
@@ -162,7 +173,7 @@ public class Employee extends SQLConnect {
 				int row = table_EmployeeList.getSelectedRow();
 				if(row != -1) {
 					String emp_id_edit = String.valueOf(table_EmployeeList.getModel().getValueAt(row, 0)); 
-					EmployeeEdit edit_emp = new EmployeeEdit(emp_id_edit);
+					edit_emp = new EmployeeEdit(emp_id_edit);
 					edit_emp.frame.setVisible(true);
 				}else {
 					JOptionPane.showMessageDialog(null, "No selected Employee.");
