@@ -25,7 +25,7 @@ public class Admin extends SQLConnect {
 
 	JFrame frame;
 	 
-	private Double total_sales = 0.00;
+	private Double total_sales = 0.00, total_cost = 0.00;
 	private int total_trans = 0;
 	private String emp_id, type;
 	private JTable table_Sales;
@@ -48,7 +48,6 @@ public class Admin extends SQLConnect {
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
 		    	model.addRow(new Object[]{rs.getString("sale_id"),rs.getString("total"), rs.getString("sale_date")});
-		    	
 		    	total_trans ++;
 		    	
 		    	if (!rs.getString("total").equals(null)) {
@@ -57,9 +56,22 @@ public class Admin extends SQLConnect {
 		    }
 		    
            
-	 }catch(HeadlessException | SQLException ex){
-		 JOptionPane.showMessageDialog(null, ex );
-    }
+		 }catch(HeadlessException | SQLException ex){
+			 JOptionPane.showMessageDialog(null, ex );
+		 }
+		
+		try{
+		    con = DriverManager.getConnection(connectionUrl);
+		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE qty <> 0");
+		    rs = ps.executeQuery();
+		    while(rs.next()) {
+		    	total_cost += Double.parseDouble(rs.getString("cost")) * Integer.parseInt(rs.getString("qty"));
+		    }
+		    
+           
+		 }catch(HeadlessException | SQLException ex){
+			 JOptionPane.showMessageDialog(null, ex );
+		 }
 	}
 
 	/**
@@ -69,9 +81,6 @@ public class Admin extends SQLConnect {
 		this.emp_id = emp_id;
 		this.type = type;
 		initialize();
-
-
-
 	}
 
 	/**
@@ -252,7 +261,7 @@ public class Admin extends SQLConnect {
 		lblSales_1.setBounds(39, 119, 152, 39);
 		CostGoods.add(lblSales_1);
 		
-		JLabel lblNewLabel_3_1 = new JLabel("New label");
+		JLabel lblNewLabel_3_1 = new JLabel(String.valueOf(total_cost));
 		lblNewLabel_3_1.setForeground(Color.WHITE);
 		lblNewLabel_3_1.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
 		lblNewLabel_3_1.setHorizontalAlignment(SwingConstants.CENTER);

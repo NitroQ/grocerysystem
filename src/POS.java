@@ -74,41 +74,75 @@ public class POS extends SQLConnect{
 		jcb_PaymentMethod.setSelectedItem("CASH");
 	}
 
+	public boolean checkDup(String sku) {
+		Boolean exists = false;
+		
+		   for(int i= 0; i < model.getRowCount(); i++) {
+				if(model.getValueAt(i, 0).toString().equals(sku)) {
+					exists = true;
+				}
+			}
+		   return exists;
+	}
 	
 	public void addSKU(String sku, String qty) {
+
+		if(!checkDup(sku)) {
+			try{
+			    con = DriverManager.getConnection(connectionUrl);
+			    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
+			    ps.setString(1, sku);
+			    rs = ps.executeQuery();
 		
-//		   for(int i= 0; i < model.getRowCount(); i++) {
-//				if(model.getValueAt(i, 0).toString().equals(sku)) {
-//					int new_qty = Integer.parseInt(qty) + Integer.parseInt(model.getValueAt(i, 2).toString());
-//					Double new_total = Double.parseDouble(model.getValueAt(i, 3).toString()) + total;
-//					model.setValueAt(new Object [] {String.valueOf(new_qty)}, i, 2);
-//				}else {
-//					
-//				}
-//			}
-		try{
-		    con = DriverManager.getConnection(connectionUrl);
-		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
-		    ps.setString(1, sku);
-		    rs = ps.executeQuery();
-	
-			   if(rs.next()) {
-				   String prodname = rs.getString("prod_name");
-				   String value = rs.getString("price");
-				   Double total = Double.parseDouble(qty) * Double.parseDouble(value);
-				model.addRow(new Object [] {rs.getString("sku"),prodname, qty , String.format("%.2f", total) });
-       			viewitem.setText(prodname);
-       			viewprice.setText(value);
-       			updateTotal();
-       			skuinput.setText("");
-       			txt_Qt.setText("");
-			   }else {
-				   Warning.setVisible(true);
-			   }
-			 
-    	 }catch(HeadlessException | SQLException ex){
-    		 JOptionPane.showMessageDialog(null, ex );
-         }
+				   if(rs.next()) {
+					   String prodname = rs.getString("prod_name");
+					   String value = rs.getString("price");
+					   Double total = Double.parseDouble(qty) * Double.parseDouble(value);
+		
+							model.addRow(new Object [] {rs.getString("sku"),prodname, qty , String.format("%.2f", total) });
+			       			viewitem.setText(prodname);
+			       			viewprice.setText(value);
+			       			updateTotal();
+			       			skuinput.setText("");
+			       			txt_Qt.setText("");
+				   }else {
+					   Warning.setVisible(true);
+				   }
+				 
+	    	 }catch(HeadlessException | SQLException ex){
+	    		 JOptionPane.showMessageDialog(null, ex );
+	         }
+		}else {
+			try{
+			    con = DriverManager.getConnection(connectionUrl);
+			    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
+			    ps.setString(1, sku);
+			    rs = ps.executeQuery();
+		
+				   if(rs.next()) {
+					   String prodname = rs.getString("prod_name");
+					   String value = rs.getString("price");
+					   Double total = Double.parseDouble(qty) * Double.parseDouble(value);
+					   	
+					   for(int i= 0; i < model.getRowCount(); i++) {
+							if(model.getValueAt(i, 0).toString().equals(sku)) {
+								int new_qty = Integer.parseInt(qty) + Integer.parseInt(model.getValueAt(i, 2).toString());
+								Double new_total = Double.parseDouble(model.getValueAt(i, 3).toString()) + total;
+								model.setValueAt(String.valueOf(new_qty), i, 2);
+								model.setValueAt(String.valueOf(new_total), i, 3);
+							}
+						}
+			       			viewitem.setText(prodname);
+			       			viewprice.setText(value);
+			       			updateTotal();
+			       			skuinput.setText("");
+			       			txt_Qt.setText("");
+				   }
+				 
+	    	 }catch(HeadlessException | SQLException ex){
+	    		 JOptionPane.showMessageDialog(null, ex );
+	         }
+		}
 	}
 	
 	public void updateTotal() {
