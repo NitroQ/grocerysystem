@@ -383,44 +383,50 @@ class EmployeeEdit{
 				 		    else if(Age.trim().equals("")) {
 				 		    	JOptionPane.showMessageDialog(null, "Age is empty");
 				 		    }
+				 		    else if(empstatus.equals("inactive") &&  chckActUser.isSelected() && String.valueOf(fieldEditPassword.getPassword()).trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Password is required.");
+				 		    }
+				 		    else if(empstatus.equals("inactive") &&  chckActUser.isSelected() && txtEditUsername.getText().trim().equals("")) {
+				 		    	JOptionPane.showMessageDialog(null, "Username is required.");
+				 		    }
 				 		    else {
-
-					    con = DriverManager.getConnection(connectionUrl);
-					    ps = con.prepareStatement("UPDATE Employee SET fname = ?, lname = ?, email= ?, empaddress = ?, position = ?, gender = ?, age= ? WHERE emp_id = ? ");
-			             ps.setString(1, txtEditFName.getText());
-			             ps.setString(2, txtEditLName.getText());
-			             ps.setString(3, txtEditEmail.getText());
-			             ps.setString(4, txtEditAddress.getText());
-			             ps.setString(5, String.valueOf(cmbEditRole.getSelectedItem()).equals("Merchandiser") ? "Merch" : String.valueOf(cmbEditRole.getSelectedItem()) );
-			             ps.setString(6, String.valueOf(cmbEditGender.getSelectedItem()).equals("Female") ? "F" : "M" );
-			             ps.setString(7, txtEditAge.getText());
-			             ps.setString(8, id);
-			             ps.executeUpdate();
-
-			             
-			             if(empstatus.equals("active")) {
-			            	   ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
-					             ps.setString(1, txtEditUsername.getText());
-					             if(fieldEditPassword.getPassword() != null && !String.valueOf(fieldEditPassword.getPassword()).trim().equals("")) {
-					            	 ps.setString(2, String.valueOf(fieldEditPassword.getPassword()));
-					             }else {
-					            	 ps.setString(2, Password);
-					             }
-					             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
-					             ps.setString(4, id);
+		
+							    con = DriverManager.getConnection(connectionUrl);
+							    ps = con.prepareStatement("UPDATE Employee SET fname = ?, lname = ?, email= ?, empaddress = ?, position = ?, gender = ?, age= ? WHERE emp_id = ? ");
+					             ps.setString(1, txtEditFName.getText());
+					             ps.setString(2, txtEditLName.getText());
+					             ps.setString(3, txtEditEmail.getText());
+					             ps.setString(4, txtEditAddress.getText());
+					             ps.setString(5, String.valueOf(cmbEditRole.getSelectedItem()).equals("Merchandiser") ? "Merch" : String.valueOf(cmbEditRole.getSelectedItem()) );
+					             ps.setString(6, String.valueOf(cmbEditGender.getSelectedItem()).equals("Female") ? "F" : "M" );
+					             ps.setString(7, txtEditAge.getText());
+					             ps.setString(8, id);
 					             ps.executeUpdate();
-					             JOptionPane.showMessageDialog(null, "Updated");
-			             }else if(empstatus.equals("inactive") &&  chckActUser.isSelected()) {
-			            	  ps = con.prepareStatement("INSERT INTO Users (emp_id, username, password, user_type) VALUES  (?,?,?,?)");
-					             ps.setString(1, emp_id);
-					             ps.setString(2, txtEditUsername.getText());
-					             ps.setString(3, String.valueOf(fieldEditPassword.getPassword()));
-					             ps.setString(4, chckEditUser.isSelected() ? "admin" : "emp" );
-					             ps.executeUpdate();					             
-					             JOptionPane.showMessageDialog(null, "Updated, User now active");
-			             }
-			             updateTable();
-			             frame.dispose();
+		
+					             
+					             if(empstatus.equals("active")) {
+					            	   ps = con.prepareStatement("UPDATE Users SET username = ?, password = ?, user_type = ? WHERE emp_id = ?");
+							             ps.setString(1, txtEditUsername.getText());
+							             if(fieldEditPassword.getPassword() != null && !String.valueOf(fieldEditPassword.getPassword()).trim().equals("")) {
+							            	 ps.setString(2, String.valueOf(fieldEditPassword.getPassword()));
+							             }else {
+							            	 ps.setString(2, Password);
+							             }
+							             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
+							             ps.setString(4, id);
+							             ps.executeUpdate();
+							             JOptionPane.showMessageDialog(null, "Updated");
+					             }else if(empstatus.equals("inactive") &&  chckActUser.isSelected()) {
+					            	  ps = con.prepareStatement("INSERT INTO Users (emp_id, username, password, user_type) VALUES  (?,?,?,?)");
+							             ps.setString(1, emp_id);
+							             ps.setString(2, txtEditUsername.getText());
+							             ps.setString(3, String.valueOf(fieldEditPassword.getPassword()));
+							             ps.setString(4, chckEditUser.isSelected() ? "admin" : "emp" );
+							             ps.executeUpdate();					             
+							             JOptionPane.showMessageDialog(null, "Updated, User now active");
+					             }
+					             updateTable();
+					             frame.dispose();
 					}
 			             
 
@@ -584,7 +590,7 @@ class EmployeeAdd {
 			Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
 			Dimension frameSize = new Dimension (718, 700);
 			
-			frame = new JFrame("GoShopper Employee Edit");
+			frame = new JFrame("GoShopper Employee Add");
 			frame.setResizable(false);
 			frame.getContentPane().setBackground(Color.WHITE);
 			frame.setBounds (ss.width / 2 - frameSize.width / 2, ss.height/2 - frameSize.height/2,897, 508);
@@ -596,7 +602,7 @@ class EmployeeAdd {
 			frame.getContentPane().setLayout(null);
 
 
-			JLabel EditEmployeeText = new JLabel("Edit Employee");
+			JLabel EditEmployeeText = new JLabel("Add Employee");
 			EditEmployeeText.setForeground(Color.BLACK);
 			EditEmployeeText.setFont(new Font("Segoe UI Variable", Font.BOLD, 20));
 			EditEmployeeText.setBounds(28, 85, 325, 35);
