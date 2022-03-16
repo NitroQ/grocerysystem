@@ -25,7 +25,7 @@ public class Admin extends SQLConnect {
 
 	JFrame frame;
 	 
-	private Double total_sales = 0.00, total_cost = 0.00;
+	private Double total_sales = 0.00, total_cost = 0.00, total_profit = 0.00;
 	private int total_trans = 0;
 	private String emp_id, type;
 	private JTable table_Sales;
@@ -52,6 +52,7 @@ public class Admin extends SQLConnect {
 		    	
 		    	if (!rs.getString("total").equals(null)) {
 		    		total_sales += Double.parseDouble(rs.getString("total"));
+		    		total_profit += total_sales += Double.parseDouble(rs.getString("profit"));
 		    	}
 		    }
 		    
@@ -234,12 +235,12 @@ public class Admin extends SQLConnect {
 		lblSales_2.setBounds(39, 119, 152, 39);
 		Profit.add(lblSales_2);
 		
-		JLabel lblNewLabel_3_2 = new JLabel("New label");
-		lblNewLabel_3_2.setForeground(Color.WHITE);
-		lblNewLabel_3_2.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
-		lblNewLabel_3_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3_2.setBounds(24, 42, 184, 67);
-		Profit.add(lblNewLabel_3_2);
+		JLabel profitization = new JLabel(String.valueOf(total_profit));
+		profitization.setForeground(Color.WHITE);
+		profitization.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
+		profitization.setHorizontalAlignment(SwingConstants.CENTER);
+		profitization.setBounds(24, 42, 184, 67);
+		Profit.add(profitization);
 		
 		JPanel CostGoods = new JPanel();
 		CostGoods.setLayout(null);

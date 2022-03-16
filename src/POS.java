@@ -311,10 +311,11 @@ public class POS extends SQLConnect{
         		             while(rs.next()) {
         		            	 sale_id = rs.getString("identity");
         		             }
+        		             Double capital = 0.00;
     	            	 	for (int count = 0; count < model.getRowCount(); count++){
     	            	 		String item_sku = model.getValueAt(count, 0).toString();
     	            	 		String item_qty = model.getValueAt(count, 2).toString();
-    	            	 		String inv_qty = "";
+    	            	 		String inv_qty = ""; String cost = "";
             				    ps = con.prepareStatement("INSERT INTO Sold_Items (sale_id, sku, qty, item_total) VALUES (?,?,?,?)");
             				     ps.setString(1, sale_id);
             		             ps.setString(2, item_sku);
@@ -327,13 +328,22 @@ public class POS extends SQLConnect{
             					    rs = ps.executeQuery();
             					    while(rs.next()) {
             					    	inv_qty = rs.getString("qty");
+            					    	cost = rs.getString("cost");
             					    }
             					   int new_sku = Integer.parseInt(inv_qty) - Integer.parseInt(item_qty);
+            					   capital += Integer.parseInt(item_qty) * Double.parseDouble(cost);
             					 ps = con.prepareStatement("UPDATE Inventory SET qty = ? WHERE sku = ? ");
            			             ps.setString(1, String.valueOf(new_sku));
            			             ps.setString(2, item_sku);
            			             ps.executeUpdate();   
         		   			}
+    	            	 	ps = con.prepareStatement("UPDATE Sales SET profit = ? WHERE sale_id = ? ");
+    	            	 	Double profit = Double.parseDouble(txtView_Subtotal.getText()) - capital;
+      			             ps.setString(1, String.valueOf(profit));
+      			             ps.setString(2, sale_id);
+      			             ps.executeUpdate();
+      			             
+
     	            	 	JOptionPane.showMessageDialog(null, "Transaction Complete.");
     	            	 	noSaleReset();
     	            	 }
