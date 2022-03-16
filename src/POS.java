@@ -42,6 +42,7 @@ public class POS extends SQLConnect{
 	private JComboBox jcb_GoDiscount, jcb_PaymentMethod;
     JPanel panel;
     private String emp_id, type; 
+    private  Double grandtotal;
 	private  String[] columns = {"SKU", "Item", "Quantity", "Price"};
     private Object[][] data = {};
      @SuppressWarnings("serial")
@@ -59,14 +60,24 @@ public class POS extends SQLConnect{
 	}
 	
 	public void updateTotal() {
-		 Double grandtotal;
-		Double subtotal= 0.00, tax;
+		Double subtotal= 0.00, tax, nettotal, discount = 0.00;
 		for (int count = 0; count < model.getRowCount(); count++){
 			 subtotal +=  Double.parseDouble(model.getValueAt(count, 3).toString());
 			}
 		tax =  subtotal * 0.12; 
-		grandtotal = subtotal + tax;
+		nettotal = subtotal + tax;
+
+		if(jcb_GoDiscount.getSelectedItem().equals("PWD")) {
+			discount = nettotal * 0.20;
+		}else if(jcb_GoDiscount.getSelectedItem().equals("Senior")) {
+			discount = nettotal * 0.20;
+		}else if(jcb_GoDiscount.getSelectedItem().equals("Member")) {
+			discount = nettotal * 0.10;
+		}
 		
+		grandtotal = nettotal - discount;
+		
+		txtView_Discount.setText("-"+ String.format("%.2f", discount));
 		txtView_Subtotal.setText(String.format("%.2f", subtotal));
 		txtView_VAT.setText(String.format("%.2f",tax));
 		txtView_GrandTotal.setText(String.format("%.2f", grandtotal));
@@ -140,27 +151,6 @@ public class POS extends SQLConnect{
         PaymentDetails.add(txtView_VAT);
         
         txtView_GrandTotal = new JLabel("");
-        txtView_GrandTotal.addPropertyChangeListener(new PropertyChangeListener() {
-        	public void propertyChange(PropertyChangeEvent evt) {
-        		if(!txtView_GrandTotal.getText().equals("")) {
-        			Double grandtotal = Double.parseDouble(txtView_GrandTotal.getText());
-	       			if(jcb_PaymentMethod.getSelectedItem().equals("PWD")) {
-	       				double pwd_dis = grandtotal * 0.20;
-	       				grandtotal -= pwd_dis;
-	       				txtView_GrandTotal.setText(String.valueOf(grandtotal));
-	       				txtView_Discount.setText(String.valueOf(pwd_dis));
-	       				
-	       			}else if(jcb_PaymentMethod.getSelectedItem().equals("Senior")) {
-	       				double sen_dis = grandtotal * 0.20;
-	       				grandtotal -= sen_dis;
-	       				txtView_GrandTotal.setText(String.valueOf(grandtotal));
-	       				txtView_Discount.setText(String.valueOf(sen_dis));
-	       			}else if(jcb_PaymentMethod.getSelectedItem().equals("Member")) {
-	       				
-	       			}
-	       		}
-        	}
-        });
         txtView_GrandTotal.setHorizontalAlignment(SwingConstants.RIGHT);
         txtView_GrandTotal.setForeground(Color.WHITE);
         txtView_GrandTotal.setFont(new Font("Segoe UI Variable", Font.PLAIN, 20));
@@ -208,29 +198,54 @@ public class POS extends SQLConnect{
         		String sale_id = "";
         	
     				try{
-    				    con = DriverManager.getConnection(connectionUrl);
-    				    ps = con.prepareStatement("INSERT INTO Sales (emp_id, payment, discount, total, payment_amt, change) VALUES (?,?,?,?); SELECT @@IDENTITY AS 'identity';");
-    		             ps.setString(1, emp_id);
-    		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
-    		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("GoDiscount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
-    		             ps.setString(4, txtView_GrandTotal.getText().toString());
-    		             ps.setString(5, txt_Cash.getText());
-    		             ps.setString(6, txt_change.getText());
-    		             rs = ps.executeQuery();
-    		             while(rs.next()) {
-    		            	 sale_id = rs.getString("identity");
-    		             }
-	            	 	for (int count = 0; count < model.getRowCount(); count++){
-        				    ps = con.prepareStatement("INSERT INTO Sold_Items (sale_id, sku, qty, item_total) VALUES (?,?,?,?)");
-        				     ps.setString(1, sale_id);
-        		             ps.setString(2, model.getValueAt(count, 0).toString());
-        		             ps.setString(3, model.getValueAt(count, 2).toString());
-        		             ps.setString(4, model.getValueAt(count, 3).toString());
-        		             ps.executeUpdate();
-    		   			}
+    					if(model.getRowCount() == 0) {
+    						JOptionPane.showMessageDialog(null, "Add an Item");
+    					}else if(txt_Cash.getText().trim().equals("") || txt_Cash.getText().equals(null) ) {
+    						JOptionPane.showMessageDialog(null, "Not Paid!");
+    					}else if(Double.parseDouble(txt_change.getText()) < 0 ) {
+    						JOptionPane.showMessageDialog(null, "Change cannot be negative!");
+    					}else {
+    					    con = DriverManager.getConnection(connectionUrl);
+        				    ps = con.prepareStatement("INSERT INTO Sales (emp_id, payment, discount, total, payment_amt, change) VALUES (?,?,?,?,?,?); SELECT @@IDENTITY AS 'identity';");
+        		             ps.setString(1, emp_id);
+        		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
+        		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("GoDiscount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
+        		             ps.setString(4, txtView_GrandTotal.getText().toString());
+        		             ps.setString(5, txt_Cash.getText());
+        		             ps.setString(6, txt_change.getText());
+        		             rs = ps.executeQuery();
+        		             while(rs.next()) {
+        		            	 sale_id = rs.getString("identity");
+        		             }
+    	            	 	for (int count = 0; count < model.getRowCount(); count++){
+    	            	 		String item_sku = model.getValueAt(count, 0).toString();
+    	            	 		String item_qty = model.getValueAt(count, 2).toString();
+    	            	 		String inv_qty = "";
+            				    ps = con.prepareStatement("INSERT INTO Sold_Items (sale_id, sku, qty, item_total) VALUES (?,?,?,?)");
+            				     ps.setString(1, sale_id);
+            		             ps.setString(2, item_sku);
+            		             ps.setString(3, item_qty);
+            		             ps.setString(4, model.getValueAt(count, 3).toString());
+            		             ps.executeUpdate();
+            		             
+            		             ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ?");
+            					    ps.setString(1, item_sku);
+            					    rs = ps.executeQuery();
+            					    while(rs.next()) {
+            					    	inv_qty = rs.getString("qty");
+            					    }
+            					   int new_sku = Integer.parseInt(inv_qty) - Integer.parseInt(item_qty);
+            					 ps = con.prepareStatement("UPDATE Inventory SET qty = ? WHERE sku = ? ");
+           			             ps.setString(1, String.valueOf(new_sku));
+           			             ps.setString(2, item_sku);
+           			             ps.executeUpdate();
+
+            		             JOptionPane.showMessageDialog(null, "Transaction Complete.");
+        		   			}
+    					}
 //    		             updateTable();
     		             
-   		             JOptionPane.showMessageDialog(null, "Transaction Complete.");
+   		            
     		                
     		    	 }catch(HeadlessException | SQLException ex){
     		    		 JOptionPane.showMessageDialog(null, ex );
@@ -262,7 +277,7 @@ public class POS extends SQLConnect{
         	public void actionPerformed(ActionEvent e) {
         		try{
         		    con = DriverManager.getConnection(connectionUrl);
-        		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ?");
+        		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
         		    ps.setString(1, skuinput.getText());
         		    rs = ps.executeQuery();
         	
@@ -312,12 +327,16 @@ public class POS extends SQLConnect{
         btn_Void = new JButton("Void");
         btn_Void.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		int del = table.getSelectedRow();
-        		model.removeRow(del);
-        		updateTotal();
-        		
-        		viewitem.setText("");
-        		viewprice.setText("");
+        	    int n = JOptionPane.showConfirmDialog(null, "Confirm Void?" , "WARNING", JOptionPane.YES_NO_OPTION);
+
+			      if(n == JOptionPane.YES_OPTION) {
+			    		int del = table.getSelectedRow();
+		        		model.removeRow(del);
+		        		updateTotal();
+		        		viewitem.setText("");
+		        		viewprice.setText("");
+			      }
+
         	}
         });
         btn_Void.setBackground(new Color(220, 20, 60));
@@ -333,30 +352,14 @@ public class POS extends SQLConnect{
         frame.getContentPane().add(skuinput);
         
        jcb_GoDiscount = new JComboBox();
+       jcb_GoDiscount.addActionListener(new ActionListener() {
+       	public void actionPerformed(ActionEvent e) {
+       		updateTotal();
+       	}
+       });
         jcb_GoDiscount.setBackground(new Color(255, 255, 255));
         jcb_GoDiscount.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
         jcb_GoDiscount.setModel(new DefaultComboBoxModel(new String[] {"GoDiscount", "PWD", "Senior", "Member"}));
-//        jcb_GoDiscount.addItemListener(new ItemListener() {
-//           	public void itemStateChanged(ItemEvent e) {
-//           		if(grandtotal != 0 || grandtotal != null) {
-//           			if(jcb_PaymentMethod.getSelectedItem().equals("PWD")) {
-//           				double pwd_dis = grandtotal * 0.20;
-//           				grandtotal = grandtotal -= pwd_dis;
-//           				txtView_GrandTotal.setText(String.valueOf(grandtotal));
-//           				txtView_Discount.setText(String.valueOf(pwd_dis));
-//           				
-//           			}else if(jcb_PaymentMethod.getSelectedItem().equals("Senior")) {
-//           				double sen_dis = grandtotal * 0.20;
-//           				grandtotal = grandtotal -= sen_dis;
-//           				txtView_GrandTotal.setText(String.valueOf(grandtotal));
-//           				txtView_Discount.setText(String.valueOf(sen_dis));
-//           			}else if(jcb_PaymentMethod.getSelectedItem().equals("Member")) {
-//           				
-//           			}
-//           		}
-//           
-//           	}
-//           });
         jcb_GoDiscount.setBounds(688, 273, 283, 35);
         frame.getContentPane().add(jcb_GoDiscount);
         

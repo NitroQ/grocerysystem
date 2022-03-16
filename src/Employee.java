@@ -375,20 +375,16 @@ class EmployeeEdit{
 					             ps.setString(3, chckEditUser.isSelected() ? "admin" : "emp" );
 					             ps.setString(4, id);
 					             ps.executeUpdate();
+					             JOptionPane.showMessageDialog(null, "Updated");
 			             }else if(empstatus.equals("inactive") &&  chckActUser.isSelected()) {
 			            	  ps = con.prepareStatement("INSERT INTO Users (emp_id, username, password, user_type) VALUES  (?,?,?,?)");
 					             ps.setString(1, emp_id);
 					             ps.setString(2, txtEditUsername.getText());
 					             ps.setString(3, String.valueOf(fieldEditPassword.getPassword()));
 					             ps.setString(4, chckEditUser.isSelected() ? "admin" : "emp" );
-					             ps.executeUpdate();
-			             }else {
-			            	 JOptionPane.showMessageDialog(null, "Error Occured");
+					             ps.executeUpdate();					             
+					             JOptionPane.showMessageDialog(null, "Updated, User now active");
 			             }
-			             
-			          
-			             
-			             JOptionPane.showMessageDialog(null, "Updated");
 			             updateTable();
 			             frame.dispose();
 			             
