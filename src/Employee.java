@@ -808,7 +808,11 @@ class EmployeeAdd {
 			JLabel lblEditAge = new JLabel("Age");
 			lblEditAge.setFont(new Font("Segoe UI Variable", Font.ITALIC, 16));
 			lblEditAge.setBounds(594, 208, 294, 21);
-			lblEditAge.addKeyListener(new KeyAdapter() {
+			frame.getContentPane().add(lblEditAge);
+		
+			
+			txtAge = new JTextField();
+			txtAge.addKeyListener(new KeyAdapter() {
 	        	@Override
 	        	public void keyTyped(KeyEvent e) {
 	        		char c = e.getKeyChar();
@@ -818,10 +822,6 @@ class EmployeeAdd {
 	        			}
 	        	}
 	        });
-			frame.getContentPane().add(lblEditAge);
-		
-			
-			txtAge = new JTextField();
 			txtAge.setFont(new Font("Segoe UI Variable", Font.PLAIN, 15));
 			txtAge.setBackground(new Color(245, 245, 245));
 			txtAge.setBounds(594, 238, 273, 35);
