@@ -443,7 +443,7 @@ public class Admin extends SQLConnect {
 			payment_serv.setBounds(33, 151, 198, 28);
 			frame.getContentPane().add(payment_serv);
 			
-			JLabel discount_serv = new JLabel("Discount Availed: " + discount);
+			JLabel discount_serv = new JLabel("Discount Availed: " + (discount == null ? "No Discount" : discount) );
 			discount_serv.setFont(new Font("Segoe UI Variable", Font.BOLD, 12));
 			discount_serv.setBounds(33, 185, 198, 28);
 			frame.getContentPane().add(discount_serv);

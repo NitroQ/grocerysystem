@@ -393,6 +393,16 @@ public class POS extends SQLConnect{
         frame.getContentPane().add(btnNewButton_8);
         
         txt_Qt = new JTextField();
+        txt_Qt.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+        		e.consume();	        		
+        			}
+        	}
+        });
         txt_Qt.setBackground(new Color(245, 245, 245));
         txt_Qt.setColumns(10);
         txt_Qt.setBounds(883, 137, 88, 35);
@@ -424,6 +434,14 @@ public class POS extends SQLConnect{
         	@Override
         	public void keyReleased(KeyEvent e) {
         		Warning.setVisible(false);
+        	}
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		char c = e.getKeyChar();
+        		
+        		if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+        		e.consume();	        		
+        			}
         	}
         });
         skuinput.setBackground(new Color(245, 245, 245));
