@@ -17,9 +17,9 @@ Show business capital, current profits and total transactions.
 
 
 ## Development Tools
-Microsoft SQL Server Management Studio 18
-SQL Server 2018
-Eclipse
+Microsoft SQL Server Management Studio 18 </br>
+SQL Server 2018</br>
+Eclipse</br>
 
 
 
