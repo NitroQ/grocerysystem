@@ -9,10 +9,10 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class SQLConnect {
-	static String connectionUrl = "jdbc:sqlserver://localhost:1433; "
-			+ "databaseName= grocerysystem;"
-			+ "username= frankie;"
-			+ "password= frankie123;"
+	static String connectionUrl = "jdbc:sqlserver://goshopper.database.windows.net; "
+			+ "databaseName= GoShopperPOS;"
+			+ "username= FrankAdmin2020;"
+			+ "password= GoShopper2022!@$;"
 			+ "encrypt=true;trustServerCertificate=true;";
 	static Connection con = null;
 	static PreparedStatement ps = null;
