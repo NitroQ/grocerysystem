@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 public class SQLConnect {
 	static String connectionUrl = "jdbc:sqlserver://goshopper.database.windows.net; "
 			+ "databaseName= GoShopperPOS;"
-			+ "username= FrankAdmin2020;"
-			+ "password= GoShopper2022!@$;"
+			+ "username= ;"
+			+ "password= "
 			+ "encrypt=true;trustServerCertificate=true;";
 	static Connection con = null;
 	static PreparedStatement ps = null;
