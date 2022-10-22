@@ -2,6 +2,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -46,7 +47,7 @@ public class POS extends SQLConnect{
     JPanel panel;
     private String emp_id, type; 
     private  Double grandtotal;
-	private  String[] columns = {"SKU", "Item", "Quantity", "Price"};
+	private  String[] columns = {"SKU", "Item", "Quantity", "Price","ID"};
     private Object[][] data = {};
      @SuppressWarnings("serial")
     private DefaultTableModel model = new DefaultTableModel(data, columns) {
@@ -89,19 +90,19 @@ public class POS extends SQLConnect{
 
 		if(!checkDup(sku)) {
 			try{
-			    con = DriverManager.getConnection(connectionUrl);
-			    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
+			    con = DriverManager.getConnection(connectionUrl2, username, password);
+			    ps = con.prepareStatement("SELECT * FROM `llx_product` WHERE `ref` = ? AND `stock` <> 0");
 			    ps.setString(1, sku);
 			    rs = ps.executeQuery();
 		
 				   if(rs.next()) {
-					   String prodname = rs.getString("prod_name");
-					   String value = rs.getString("price");
-					   Double total = Double.parseDouble(qty) * Double.parseDouble(value);
+					   String prodname = rs.getString("label");
+					   Double value = rs.getDouble("price");
+					   Double total = Double.parseDouble(qty) * value;
 		
-							model.addRow(new Object [] {rs.getString("sku"),prodname, qty , String.format("%.2f", total) });
+							model.addRow(new Object [] {rs.getString("ref"),prodname, qty , String.format("%.2f", total), rs.getString("rowid") });
 			       			viewitem.setText(prodname);
-			       			viewprice.setText(value);
+			       			viewprice.setText(String.valueOf(value));
 			       			updateTotal();
 			       			skuinput.setText("");
 			       			txt_Qt.setText("");
@@ -114,26 +115,26 @@ public class POS extends SQLConnect{
 	         }
 		}else {
 			try{
-			    con = DriverManager.getConnection(connectionUrl);
-			    ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ? AND qty <> 0");
+			    con = DriverManager.getConnection(connectionUrl2, username, password);
+			    ps = con.prepareStatement("SELECT * FROM `llx_product` WHERE `ref` = ? AND `stock` <> 0");
 			    ps.setString(1, sku);
 			    rs = ps.executeQuery();
 		
 				   if(rs.next()) {
-					   String prodname = rs.getString("prod_name");
-					   String value = rs.getString("price");
-					   Double total = Double.parseDouble(qty) * Double.parseDouble(value);
+					   String prodname = rs.getString("label");
+					   Double value = rs.getDouble("price");
+					   Double total = Double.parseDouble(qty) * value;
 					   	
 					   for(int i= 0; i < model.getRowCount(); i++) {
 							if(model.getValueAt(i, 0).toString().equals(sku)) {
-								int new_qty = Integer.parseInt(qty) + Integer.parseInt(model.getValueAt(i, 2).toString());
+								double new_qty = Double.parseDouble(qty) + Double.parseDouble(model.getValueAt(i, 2).toString());
 								Double new_total = Double.parseDouble(model.getValueAt(i, 3).toString()) + total;
 								model.setValueAt(String.valueOf(new_qty), i, 2);
 								model.setValueAt(String.valueOf(new_total), i, 3);
 							}
 						}
 			       			viewitem.setText(prodname);
-			       			viewprice.setText(value);
+			       			viewprice.setText(String.valueOf(value));
 			       			updateTotal();
 			       			skuinput.setText("");
 			       			txt_Qt.setText("");
@@ -299,58 +300,85 @@ public class POS extends SQLConnect{
     					}else if(Double.parseDouble(txt_change.getText()) < 0 ) {
     						JOptionPane.showMessageDialog(null, "Change cannot be negative!");
     					}else {
-    					    con = DriverManager.getConnection(connectionUrl);
-        				    ps = con.prepareStatement("INSERT INTO Sales (emp_id, payment, discount, total, payment_amt, change) VALUES (?,?,?,?,?,?); SELECT @@IDENTITY AS 'identity';");
-        		             ps.setString(1, emp_id);
-        		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
-        		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("No Discount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
-        		             ps.setString(4, txtView_GrandTotal.getText().toString());
-        		             ps.setString(5, txt_Cash.getText());
-        		             ps.setString(6, txt_change.getText());
-        		             rs = ps.executeQuery();
-        		             while(rs.next()) {
-        		            	 sale_id = rs.getString("identity");
-        		             }
+    					    con = DriverManager.getConnection(connectionUrl2, username, password);
+    				 		Connection contwo = DriverManager.getConnection(connectionUrl, username, password);
+    				 		try {
+    				 		 ps = contwo.prepareStatement("INSERT INTO `Sales` (`emp_id`, `payment`, `discount`, `total`, `payment_amt`, `pay_change`) VALUES (?,?,?,?,?,?)");
+          		             ps.setString(1, emp_id);
+          		             ps.setString(2, jcb_PaymentMethod.getSelectedItem().toString().toLowerCase());
+          		             ps.setString(3, jcb_GoDiscount.getSelectedItem().equals("No Discount") ? null : jcb_GoDiscount.getSelectedItem().toString().toLowerCase());
+          		             ps.setString(4, txtView_GrandTotal.getText().toString());
+          		             ps.setString(5, txt_Cash.getText());
+          		             ps.setString(6, txt_change.getText());
+          		             ps.executeUpdate();
+          		             ps = contwo.prepareStatement("SELECT LAST_INSERT_ID() AS 'identity';");
+          		             rs = ps.executeQuery();
+          		             while(rs.next()) {
+          		            	 sale_id = rs.getString("identity");
+          		             }
+    				 		}catch(HeadlessException | SQLException ex){
+    	    		    		 JOptionPane.showMessageDialog(null, ex + "error sales insert");
+    	    		    		 
+    	    		         }
         		             Double capital = 0.00;
     	            	 	for (int count = 0; count < model.getRowCount(); count++){
     	            	 		String item_sku = model.getValueAt(count, 0).toString();
+    	            	 		String item_id = model.getValueAt(count, 4).toString();
     	            	 		String item_qty = model.getValueAt(count, 2).toString();
-    	            	 		String inv_qty = ""; String cost = "";
-            				    ps = con.prepareStatement("INSERT INTO Sold_Items (sale_id, sku, qty, item_total) VALUES (?,?,?,?)");
+    	            	 		int inv_qty = 0; Double cost = 0.00;
+    	            	 		try {
+            				    ps = contwo.prepareStatement("INSERT INTO `Sold_Items` (`sale_id`, `sku`, `qty`, `item_total`) VALUES (?,?,?,?)");
             				     ps.setString(1, sale_id);
             		             ps.setString(2, item_sku);
             		             ps.setString(3, item_qty);
             		             ps.setString(4, model.getValueAt(count, 3).toString());
             		             ps.executeUpdate();
-            		             
-            		             ps = con.prepareStatement("SELECT * FROM Inventory WHERE sku = ?");
+		    	            	 	}catch(HeadlessException | SQLException ex){
+		   	    		    		 JOptionPane.showMessageDialog(null, ex + "error sold item insert");
+		   	    		    		 
+		   	    		         }
+    	            	 		try {
+            		             ps = con.prepareStatement("SELECT * FROM `llx_product` WHERE `ref` = ?");
             					    ps.setString(1, item_sku);
             					    rs = ps.executeQuery();
             					    while(rs.next()) {
-            					    	inv_qty = rs.getString("qty");
-            					    	cost = rs.getString("cost");
+            					    	inv_qty = rs.getInt("stock");
+            					    	cost = rs.getDouble("cost_price");
             					    }
-            					   int new_sku = Integer.parseInt(inv_qty) - Integer.parseInt(item_qty);
-            					   capital += Integer.parseInt(item_qty) * Double.parseDouble(cost);
-            					 ps = con.prepareStatement("UPDATE Inventory SET qty = ? WHERE sku = ? ");
+            					  	int new_sku = inv_qty - Integer.parseInt(item_qty);
+            					   capital += Double.parseDouble(item_qty) * cost;
+            					  
+            					 ps = con.prepareStatement("UPDATE `llx_product` SET `stock` = ? WHERE `rowid` = ?");
            			             ps.setString(1, String.valueOf(new_sku));
-           			             ps.setString(2, item_sku);
+           			             ps.setString(2, item_id);
            			             ps.executeUpdate();   
+           			             ps = con.prepareStatement("UPDATE `llx_product_stock` SET `reel` = ? WHERE `fk_product` = ?;");
+           			             ps.setString(1, String.valueOf(new_sku));
+        			             ps.setString(2, item_id);
+        			             ps.executeUpdate();   
+           			             
+    	            	 		}catch(HeadlessException | SQLException ex){
+		   	    		    		 JOptionPane.showMessageDialog(null, ex + "error item locate/ deduction");
+		   	    		    		 
+		   	    		         }
         		   			}
-    	            	 	ps = con.prepareStatement("UPDATE Sales SET profit = ? WHERE sale_id = ? ");
+    	            	 	try {
+    	            	 	ps = contwo.prepareStatement("UPDATE `Sales` SET `profit` = ? WHERE `sale_id` = ? ");
     	            	 	Double profit = Double.parseDouble(txtView_Subtotal.getText()) - capital;
       			             ps.setString(1, String.valueOf(profit));
       			             ps.setString(2, sale_id);
       			             ps.executeUpdate();
-      			             
-
+	    					}catch(HeadlessException | SQLException ex){
+	  	    		    		 JOptionPane.showMessageDialog(null, ex + "error profit");
+	  	    		    		 
+	  	    		         }
     	            	 	JOptionPane.showMessageDialog(null, "Transaction Complete.");
     	            	 	noSaleReset();
     	            	 }
 //    		             updateTable();
-    		             
     		    	 }catch(HeadlessException | SQLException ex){
-    		    		 JOptionPane.showMessageDialog(null, ex );
+    		    		 JOptionPane.showMessageDialog(null, ex + "error sales main");
+    		    		 
     		         }
 
         	}
@@ -627,11 +655,11 @@ public class POS extends SQLConnect{
 		public void updateTable() {
 			 inv_model.setRowCount(0);
 			try{
-			    con = DriverManager.getConnection(connectionUrl);
-			    ps = con.prepareStatement("SELECT * FROM Inventory WHERE qty <> 0");
+			    con = DriverManager.getConnection(connectionUrl2, username, password);
+			    ps = con.prepareStatement("SELECT * FROM `llx_product` WHERE `stock` <> 0");
 			    rs = ps.executeQuery();
 			    while(rs.next()) {
-			    	inv_model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+			    	inv_model.addRow(new Object[]{rs.getString("ref"),rs.getString("label"), rs.getDouble("price")});
 			    }
 	             
 	 	 }catch(HeadlessException | SQLException ex){
@@ -695,12 +723,12 @@ public class POS extends SQLConnect{
 	        		if(chooseSearch.getSelectedItem().equals("Search SKU")) {
 	        			inv_model.setRowCount(0);
 	        				try{
-	        					String searchSKU = "SELECT * FROM Inventory WHERE qty <> 0 AND sku LIKE '%" + txtsearch.getText() +"%'";
-	        				    con = DriverManager.getConnection(connectionUrl);
+	        					String searchSKU = "SELECT * FROM `llx_product` WHERE `stock` <> 0 AND `ref` LIKE '%" + txtsearch.getText() +"%'";
+	        				    con = DriverManager.getConnection(connectionUrl2, username, password);
 	        				    ps = con.prepareStatement(searchSKU);
 	        				    rs = ps.executeQuery();
 	        				    while(rs.next()) {
-	        				    	inv_model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+	        				    	inv_model.addRow(new Object[]{rs.getString("ref"),rs.getString("label"), rs.getDouble("price"), rs.getString("rowid")});
 	        				    }
 	        		             
 	        		 	 }catch(HeadlessException | SQLException ex){
@@ -709,12 +737,12 @@ public class POS extends SQLConnect{
 	        		}if(chooseSearch.getSelectedItem().equals("Search Product")) {
 	        			inv_model.setRowCount(0);
 	      				try{
-	      					String searchSKU = "SELECT * FROM Inventory WHERE qty <> 0 AND prod_name LIKE '%" + txtsearch.getText() +"%'";
-	      				    con = DriverManager.getConnection(connectionUrl);
+	      					String searchSKU = "SELECT * FROM `llx_product` WHERE `stock` <> 0 AND `label` LIKE '%" + txtsearch.getText() +"%'";
+	      				    con = DriverManager.getConnection(connectionUrl2, username, password);
 	      				    ps = con.prepareStatement(searchSKU);
 	      				    rs = ps.executeQuery();
 	      				    while(rs.next()) {
-	      				    	inv_model.addRow(new Object[]{rs.getString("sku"),rs.getString("prod_name"), rs.getString("price")});
+	      				    	inv_model.addRow(new Object[]{rs.getString("ref"),rs.getString("label"), rs.getDouble("price"), rs.getString("rowid")});
 	      				    }
 	      		             
 	      		 	 }catch(HeadlessException | SQLException ex){

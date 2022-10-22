@@ -9,11 +9,10 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class SQLConnect {
-	static String connectionUrl = "jdbc:sqlserver://goshopper.database.windows.net; "
-			+ "databaseName= GoShopperPOS;"
-			+ "username= FrankAdmin2020;"
-			+ "password= GoShopper2022!@$;"
-			+ "encrypt=true;trustServerCertificate=true;";
+	static String connectionUrl = "jdbc:mysql://localhost:3306/goshopperdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	static String connectionUrl2 = "jdbc:mysql://localhost:3306/goshopperdolibarr?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	static String username = "root";
+	static String password = "";
 	static Connection con = null;
 	static PreparedStatement ps = null;
 	static ResultSet rs = null;
@@ -35,7 +34,7 @@ public class SQLConnect {
 	}
 	
 	public static void main(String[] args) {
-		try (Connection connection= DriverManager.getConnection(connectionUrl);){
+		try (Connection connection= DriverManager.getConnection(connectionUrl, username, password);){
 			System.out.println("Connected Successfully");
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -44,7 +43,7 @@ public class SQLConnect {
 	
 	public static void createlog(LogType family, String emp_id, String where, String remarks) {
 		try{
-		    con = DriverManager.getConnection(connectionUrl);
+		    con = DriverManager.getConnection(connectionUrl, username, password);
 		    ps = con.prepareStatement("INSERT INTO Logs (emp_id, family, loc, remarks) VALUES (?,?,?,?)");
              ps.setString(1, emp_id);
              ps.setString(2, family.toString());

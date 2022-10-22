@@ -55,7 +55,7 @@ public class Employee extends SQLConnect {
 	public void updateTable() {
 		   model.setRowCount(0);
 		try{
-		    con = DriverManager.getConnection(connectionUrl);
+		    con = DriverManager.getConnection(connectionUrl, username, password);
 		    ps = con.prepareStatement("SELECT * FROM Employee");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
@@ -193,7 +193,7 @@ public class Employee extends SQLConnect {
 				if(row != -1) {
 					try{
 						String del = String.valueOf(table_EmployeeList.getModel().getValueAt(row, 0)); 
-					    con = DriverManager.getConnection(connectionUrl);
+					    con = DriverManager.getConnection(connectionUrl, username, password);
 					    ps = con.prepareStatement("DELETE FROM Users WHERE emp_id = ?; UPDATE Employee SET empstatus = 'inactive' WHERE emp_id = ?");
 					    ps.setString(1, del);
 					    ps.setString(2, del);
@@ -254,7 +254,7 @@ class EmployeeEdit{
 
 		public void find() {
 			try{
-			    con = DriverManager.getConnection(connectionUrl);
+			    con = DriverManager.getConnection(connectionUrl, username, password);
 			    ps = con.prepareStatement("SELECT * FROM Employee WHERE emp_id = ?");
 			    ps.setString(1, id);
 			    rs = ps.executeQuery();
@@ -269,7 +269,7 @@ class EmployeeEdit{
 				   empstatus = rs.getString("empstatus");
 			    }
 			  if(empstatus.equals("active")) {
-				  con = DriverManager.getConnection(connectionUrl);
+				  con = DriverManager.getConnection(connectionUrl, username, password);
 				    ps = con.prepareStatement("SELECT * FROM Users WHERE emp_id = ?");
 				    ps.setString(1, id);
 				    rs = ps.executeQuery();
@@ -397,7 +397,7 @@ class EmployeeEdit{
 				 		    }
 				 		    else {
 		
-							    con = DriverManager.getConnection(connectionUrl);
+							    con = DriverManager.getConnection(connectionUrl, username, password);
 							    ps = con.prepareStatement("UPDATE Employee SET fname = ?, lname = ?, email= ?, empaddress = ?, position = ?, gender = ?, age= ? WHERE emp_id = ? ");
 					             ps.setString(1, txtEditFName.getText());
 					             ps.setString(2, txtEditLName.getText());
@@ -694,7 +694,7 @@ class EmployeeAdd {
 								JOptionPane.showMessageDialog(null, "Username is required");
 							}
 				 		    else {
-					    con = DriverManager.getConnection(connectionUrl);
+					    con = DriverManager.getConnection(connectionUrl, username, password);
 					    ps = con.prepareStatement("INSERT INTO Employee (fname, lname, email, empaddress, position, gender, age) VALUES (?,?,?,?,?,?,?);  SELECT @@IDENTITY AS 'identity';");
 			             ps.setString(1, txtFName.getText() );
 			             ps.setString(2, txtLName.getText());

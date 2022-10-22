@@ -43,7 +43,7 @@ public class Admin extends SQLConnect {
  	public void updateTable() {
 		  model.setRowCount(0);
 		try{
-		    con = DriverManager.getConnection(connectionUrl);
+		    con = DriverManager.getConnection(connectionUrl, username, password);
 		    ps = con.prepareStatement("SELECT * FROM Sales ORDER BY sale_id DESC");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
@@ -64,7 +64,7 @@ public class Admin extends SQLConnect {
 		 }
 		
 		try{
-		    con = DriverManager.getConnection(connectionUrl);
+		    con = DriverManager.getConnection(connectionUrl, username, password);
 		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE qty <> 0");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
@@ -362,7 +362,7 @@ public class Admin extends SQLConnect {
 		public void updateTable() {
 			   model_sales.setRowCount(0);
 			try{
-			    con = DriverManager.getConnection(connectionUrl);
+			    con = DriverManager.getConnection(connectionUrl, username, password);
 			    ps = con.prepareStatement("SELECT * FROM Sales WHERE sale_id = ?");
 			    ps.setString(1, sale_id);
 			    rs = ps.executeQuery();

@@ -138,8 +138,8 @@ public class Login extends SQLConnect {
         	public void actionPerformed(ActionEvent e) {
         		   try {
         			   String user = null, passw = null; 
-        	           con = DriverManager.getConnection(connectionUrl);
-        	           ps = con.prepareStatement("SELECT * FROM Users WHERE username = ? AND password = ? ");
+        	           con = DriverManager.getConnection(connectionUrl, username, password);
+        	           ps = con.prepareStatement("SELECT * FROM `Users` WHERE `username` = ? AND `password` = ? ");
         	           ps.setString(1, loginUser.getText());
         	           ps.setString(2, String.valueOf(loginPassword.getPassword()));
         	           rs = ps.executeQuery();
