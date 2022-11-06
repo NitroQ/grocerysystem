@@ -3,6 +3,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.HeadlessException;
 
@@ -22,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -165,10 +168,14 @@ public class Inventory extends SQLConnect{
 		btnAdd.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				  try {
+				        Desktop.getDesktop().browse(new URL("http://dolibarr.test/product/card.php?leftmenu=product&action=create&type=0").toURI());
+				    } catch (Exception ez) {
+				        ez.printStackTrace();
+				    }
 			}
 		});
-		btnAdd.setBounds(688, 133, 89, 30);
+		btnAdd.setBounds(785, 141, 89, 30);
 		frame.getContentPane().add(btnAdd);
 		
 		JButton btnEdit = new JButton("Edit");
@@ -177,24 +184,22 @@ public class Inventory extends SQLConnect{
 		btnEdit.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
+				int row = table.getSelectedRow();
+				if(row != -1) {
+					String id = "http://dolibarr.test/product/card.php?id=" + table.getModel().getValueAt(row, 0).toString();
+					 try {
+					        Desktop.getDesktop().browse(new URL(id).toURI());
+					    } catch (Exception ez) {
+					        ez.printStackTrace();
+					    }
+				}else {
+					JOptionPane.showMessageDialog(null, "No selected item.");
+				}
 				
 			}
 		});
-		btnEdit.setBounds(784, 133, 89, 30);
+		btnEdit.setBounds(881, 141, 89, 30);
 		frame.getContentPane().add(btnEdit);
-		
-		JButton btnDelete = new JButton("No Stock");
-		btnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
-		btnDelete.setForeground(new Color(255, 255, 255));
-		btnDelete.setBackground(new Color(220, 20, 60));
-		btnDelete.setFont(new Font("Segoe UI Variable", Font.PLAIN, 14));
-		btnDelete.setBounds(881, 133, 89, 30);
-		frame.getContentPane().add(btnDelete);
 		
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setForeground(new Color(255, 255, 255));
@@ -205,7 +210,7 @@ public class Inventory extends SQLConnect{
 				updateTable();
 			}
 		});
-		btnRefresh.setBounds(591, 133, 89, 30);
+		btnRefresh.setBounds(688, 141, 89, 30);
 		frame.getContentPane().add(btnRefresh);
 		
 		JLabel Window_Name_2 = new JLabel("In Stock Items");

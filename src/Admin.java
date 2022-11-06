@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.table.DefaultTableModel;
 
@@ -64,11 +65,11 @@ public class Admin extends SQLConnect {
 		 }
 		
 		try{
-		    con = DriverManager.getConnection(connectionUrl, username, password);
-		    ps = con.prepareStatement("SELECT * FROM Inventory WHERE qty <> 0");
+		    con = DriverManager.getConnection(connectionUrl2, username, password);
+		    ps = con.prepareStatement("SELECT * FROM `llx_product` WHERE `stock` <> 0");
 		    rs = ps.executeQuery();
 		    while(rs.next()) {
-		    	total_cost += Double.parseDouble(rs.getString("cost")) * Integer.parseInt(rs.getString("qty"));
+		    	total_cost += (rs.getDouble("cost_price") * rs.getInt("stock"));
 		    }
 		    
            
@@ -263,7 +264,7 @@ public class Admin extends SQLConnect {
 		lblSales_2.setBounds(39, 119, 152, 39);
 		Profit.add(lblSales_2);
 		
-		JLabel profitization = new JLabel(String.valueOf(total_profit));
+		JLabel profitization = new JLabel("₱"+ String.valueOf(new DecimalFormat("#,###,###.##").format(total_profit)));
 		profitization.setForeground(Color.WHITE);
 		profitization.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
 		profitization.setHorizontalAlignment(SwingConstants.CENTER);
@@ -290,7 +291,7 @@ public class Admin extends SQLConnect {
 		lblSales_1.setBounds(39, 119, 152, 39);
 		CostGoods.add(lblSales_1);
 		
-		JLabel lblNewLabel_3_1 = new JLabel(String.valueOf(total_cost));
+		JLabel lblNewLabel_3_1 = new JLabel("₱"+ String.valueOf(String.valueOf(new DecimalFormat("#,###,###.##").format(total_cost))));
 		lblNewLabel_3_1.setForeground(Color.WHITE);
 		lblNewLabel_3_1.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
 		lblNewLabel_3_1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -317,7 +318,7 @@ public class Admin extends SQLConnect {
 		lblSales.setBounds(39, 119, 152, 39);
 		NetSales.add(lblSales);
 		
-		JLabel lblNewLabel_3 = new JLabel(total_sales.toString());
+		JLabel lblNewLabel_3 = new JLabel("₱" + String.valueOf(new DecimalFormat("#,###,###.##").format(total_sales)));
 		lblNewLabel_3.setForeground(Color.WHITE);
 		lblNewLabel_3.setFont(new Font("Segoe UI Variable", Font.PLAIN, 35));
 		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
